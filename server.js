@@ -10,6 +10,7 @@ require('dotenv').config();
 const PORT = process.env.PORT || 5000
 
 
+
 const app = express();
 
 
@@ -19,6 +20,8 @@ app.get('/', (req, res) => {
   console.log('>> GET /');
   res.sendFile( __dirname + '/index.html');
 });
+
+
 // On mettra notre code ICI
 
 
