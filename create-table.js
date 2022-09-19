@@ -44,7 +44,7 @@ const db = {
             await Tag.bulkCreate(dataTags);
 
         } catch (error) {
-            console.error('Error with the seeding of tables:', error);
+            console.error('Error with the seeding of tables: ', error);
         }
     }
 };
