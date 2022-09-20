@@ -1,6 +1,6 @@
 
-const Sequelize = require('sequelize');
-const sequelize = require('../database');
+// const Sequelize = require('sequelize');
+// const sequelize = require('../database');
 
 const Post = require('./post');
 const Introduction = require('./introduction');
@@ -123,8 +123,8 @@ Tag.belongsToMany(Conclusion, {
 
 
 
-(async () => {
-    await sequelize.sync({});
-})();
+// (async () => {
+//     await sequelize.sync({});
+// })();
 
 module.exports = { Post, Introduction, Body, Conclusion, Tag, User };

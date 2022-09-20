@@ -1,4 +1,4 @@
-// Initialiser la connexion Sequelize à notre BDD
+// Init Sequelize connection with database
 require("dotenv").config();
 
 const { Sequelize } = require("sequelize");
