@@ -52,7 +52,8 @@ const postController = require('../controllers/postController')
 /** ******* */
 /*  ROUTES */
 /** ****** */
-// TODO : ajouter des routes
+
+
 /**
  * GET /tags
  * @summary Get all tags

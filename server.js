@@ -5,9 +5,6 @@ require('dotenv').config();
 // Sessions
 const session = require('express-session'); 
 
-
-
-
 // Routers
 const router = require("./app/routers");
 
@@ -57,12 +54,12 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'Change Me!'      // la clé "secret" est gérée dans le .env  si le secret n'est pas defini ce sera "change Me" qui sera utilisé
 }));
 
-// /* Routes */
-// // Page d'accueil du serveur
-// app.get('/', (req, res) => {
-//   console.log('>>  /');
-//   res.sendFile( __dirname + '/index.html');
-// });
+/* Routes */
+// Page d'accueil du serveur
+app.get('/', (req, res) => {
+  console.log('>>  /');
+  res.sendFile( __dirname + '/index.html');
+});
 
 
 
