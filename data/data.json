@@ -87,32 +87,27 @@
     ],
     "posts" : [
         {
-            "title": "post1",
-            "introudction_id": 1,
+            "introduction_id": 1,
             "body_id":1,
             "conclusion_id":1
         },
         {
-            "title": "post2",
-            "introudction_id": 1,
+            "introduction_id": 1,
             "body_id":1,
             "conclusion_id":2
         },
         {
-            "title": "post3",
-            "introudction_id": 2,
+            "introduction_id": 2,
             "body_id":2,
             "conclusion_id":2
         },
         {
-            "title": "post4",
-            "introudction_id": 2,
+            "introduction_id": 2,
             "body_id":3,
             "conclusion_id":4
         },
         {
-            "title": "post5",
-            "introudction_id": 5,
+            "introduction_id": 5,
             "body_id":4,
             "conclusion_id":3
         }

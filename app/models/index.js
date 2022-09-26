@@ -23,7 +23,7 @@ Post.belongsTo(Introduction, {
 // réciproque : une intro concerne plusieurs posts
 Introduction.hasMany(Post, {
     foreignKey: "introduction_id",
-    as: "posts"
+    as: "introductions"
 });
 
 // un post a un body
@@ -32,10 +32,10 @@ Post.belongsTo(Body, {
     as: "body"
 });
 
-// réciproque : une intro concerne plusieurs posts
+// réciproque : un body concerne plusieurs posts
 Body.hasMany(Post, {
     foreignKey: "body_id",
-    as: "posts"
+    as: "bodies"
 });
 
 
@@ -48,7 +48,7 @@ Post.belongsTo(Conclusion, {
 // réciproque : une conclusion concerne plusieurs posts
 Conclusion.hasMany(Post, {
     foreignKey: "conclusion_id",
-    as: "posts"
+    as: "conclusions"
 });
 
 
