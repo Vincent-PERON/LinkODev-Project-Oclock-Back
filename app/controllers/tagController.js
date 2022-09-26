@@ -12,6 +12,7 @@ module.exports = {
         const tags = await Tag.findAll();
         res.json(tags);
     },
+
     /**
      * Get a random introduction with a specific tag
      * @param {*} req HTTP request to Express app
