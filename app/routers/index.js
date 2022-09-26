@@ -41,6 +41,14 @@ const postController = require('../controllers/postController')
  * @property {array<Tag>} tags - Array of the tags of the conclusion
  */
 
+/**
+ * Schema of a post
+ * @typedef {object} Post
+ * @property {string} introduction - Introduction of the post
+ * @property {string} body - Body of the post
+ * @property {string} conclusion - Conclusion of the post
+ */
+
 /** ******* */
 /*  ROUTES */
 /** ****** */
@@ -80,24 +88,33 @@ router.get('/tags/:idTag/introduction', tagController.getRandomIntroWithTag);
  * @return { Conclusion } 200 - success response - application/json 
  */
  router.get('/tags/:idTag/conclusion', tagController.getRandomConclusionWithTag);
+ 
+ /**
+  * GET /posts
+  * @summary Get all posts
+  * @tags post
+  * @return {array<Tag>} 200 - success response - application/json 
+  */
+ router.get('/posts', postController.getAllPosts);
+ 
+ /**
+  * GET /posts/latest
+  * @summary Get 3 latest posts
+  * @tags post
+  * @return {array<Tag>} 200 - success response - application/json 
+  */
+  router.get('/posts/latest', postController.getLastestPosts);
 
-
-/**
- * GET /posts
- * @summary Get all posts
+ /**
+ * GET /post/tags/{idTag}/
+ * @summary Generate a random post with the specified tag
  * @tags post
- * @return {array<Tag>} 200 - success response - application/json 
- */
-router.get('/posts', postController.getAllPosts);
+ * @param {number} idTag.path - Id of the tag
+ * @return { Post } 200 - success response - application/json 
+ */  
+ router.get('/post/tags/:idTag/', postController.getrandomPostById);
 
-/**
- * GET /posts/latest
- * @summary Get 3 latest posts
- * @tags post
- * @return {array<Tag>} 200 - success response - application/json 
- */
- router.get('/posts/latest', postController.getLastestPosts);
-
+ 
 
 
  

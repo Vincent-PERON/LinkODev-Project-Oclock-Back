@@ -37,7 +37,7 @@ module.exports = {
             ]
         });
 
-        res.json(intro);
+        return (intro);
     },
 
     /**
@@ -64,7 +64,7 @@ module.exports = {
             ]
         });
 
-        res.json(body);
+        return (body);
     },
 
     /**
@@ -91,6 +91,6 @@ module.exports = {
             ]
         });
 
-        res.json(conclusion);
-    }
+        return (conclusion);
+    },
 }
