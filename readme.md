@@ -27,6 +27,16 @@ git checkout -b <nom-de-la-feature>
 ```
 <p>&nbsp;</p>
 
+
+### mise à jour d'une branche de fonctionnalité
+```bash
+git add .
+git commit -m "votre_commit"
+git push origin <nom-de-la-branche>
+```
+<p>&nbsp;</p>
+
+
 ### Terminer une branche de fonctionnalité
 ```bash
 git checkout develop
