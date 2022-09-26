@@ -37,7 +37,7 @@ const options = {
     swaggerUIPath: "/api-doc", // url où se trouve la doc
     baseDir: __dirname,
     // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
-    filesPattern: "./**/*.js",
+    filesPattern: "./app/routers/*.js",
 };
 
 expressJSDocSwagger(app)(options);

@@ -1,5 +1,7 @@
 const { Post } = require("../models");
-const { getRandomIntroWithTag, getRandomConclusionWithTag, getRandomBodyWithTag} = require("./tagController");
+const { getRandomIntroWithTag, 
+        getRandomConclusionWithTag, 
+        getRandomBodyWithTag} = require("./tagController");
 
 module.exports = {
 
@@ -25,8 +27,8 @@ module.exports = {
      * @param {*} _ 
      * @param {*} res HTTP response from Express app
      */
-    async getLastestPosts(_, res) {
-        const lastestPosts = await Post.findAll({
+    async getLatestPosts(_, res) {
+        const latestPosts = await Post.findAll({
             limit: 3, 
             include: [
                 'introduction',   
@@ -40,7 +42,7 @@ module.exports = {
             attributes : ['id','title','updatedAt']
             
         });
-        res.json(posts);
+        res.json(latestPosts);
     },
 
     /**

@@ -64,31 +64,31 @@ router.get('/tags', tagController.getAllTags);
 
 
 /**
- * GET /tags/{idTag}/introduction
+ * //GET /tags/{idTag}/introduction
  * @summary Get a random introduction with the specified tag
  * @tags tag
  * @param {number} idTag.path - Id of the tag
  * @return { Introduction} 200 - success response - application/json 
  */
-router.get('/tags/:idTag/introduction', tagController.getRandomIntroWithTag);
+// router.get('/tags/:idTag/introduction', tagController.getRandomIntroWithTag);
 
 /**
- * GET /tags/{idTag}/body
+ * //GET /tags/{idTag}/body
  * @summary Get a random body with the specified tag
  * @tags tag
  * @param {number} idTag.path - Id of the tag
  * @return { Body } 200 - success response - application/json 
  */
- router.get('/tags/:idTag/body', tagController.getRandomBodyWithTag);
+//  router.get('/tags/:idTag/body', tagController.getRandomBodyWithTag);
 
 /**
- * GET /tags/{idTag}/conclusion
+ * //GET /tags/{idTag}/conclusion
  * @summary Get a random conclusion with the specified tag
  * @tags tag
  * @param {number} idTag.path - Id of the tag
  * @return { Conclusion } 200 - success response - application/json 
  */
- router.get('/tags/:idTag/conclusion', tagController.getRandomConclusionWithTag);
+//  router.get('/tags/:idTag/conclusion', tagController.getRandomConclusionWithTag);
  
  /**
   * GET /posts
@@ -104,16 +104,16 @@ router.get('/tags/:idTag/introduction', tagController.getRandomIntroWithTag);
   * @tags post
   * @return {array<Tag>} 200 - success response - application/json 
   */
-  router.get('/posts/latest', postController.getLastestPosts);
+  router.get('/posts/latest', postController.getLatestPosts);
 
  /**
- * GET /post/tags/{idTag}/
+ * GET /posts/tags/{idTag}/
  * @summary Generate a random post with the specified tag
  * @tags post
  * @param {number} idTag.path - Id of the tag
  * @return { Post } 200 - success response - application/json 
  */  
- router.get('/post/tags/:idTag/', postController.getrandomPostById);
+ router.get('/posts/tags/:idTag/', postController.getrandomPostById);
 
  
 
