@@ -53,19 +53,22 @@ module.exports = {
      async getrandomPostById(req, res) {
         /* Generate a random introduction */
         const randomIntro = await getRandomIntroWithTag(req,res);
-        const randIntro = Object.values(randomIntro)[0];
+        // const randIntro = Object.values(randomIntro)[0];
         /* Generate a random body */        
         const randomBody = await getRandomBodyWithTag(req,res);
-        const randBody = Object.values(randomBody)[0]; 
+        // const randBody = Object.values(randomBody)[0]; 
         /* Generate a random conclusion */
         const randomConclusion = await getRandomConclusionWithTag(req,res);
-        const randConclu = Object.values(randomConclusion)[0]; 
+        // const randConclu = Object.values(randomConclusion)[0]; 
 
         /* A post contain introduction, body and conclusion */
         const postGenerated = {
-            introduction : randIntro.content,
-            body: randBody.content ,
-            conclusion: randConclu.content
+            // introduction : randIntro.content,
+            // body: randBody.content ,
+            // conclusion: randConclu.content
+            introduction : randomIntro?.content ?? "", // it's like : if (randomIntro && randomIntro.content) { return randomIntro.content } else { return "" } 
+            body: randomBody?.content ?? "",
+            conclusion: randomConclusion?.content ?? ""
         };
         res.json (postGenerated);
     },

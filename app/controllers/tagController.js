@@ -20,6 +20,8 @@ module.exports = {
      */
     async getRandomIntroWithTag(req, res) {
         // TODO : See how we can have all tags of an introduction, not just the tag with specified id
+        const id = Number(req.params?.idTag);
+        console.log(id);
         const intro = await Introduction.findOne({
             attributes: ['id','content'], // If we just want content instead of all columns
             include: [{
@@ -29,7 +31,7 @@ module.exports = {
                     attributes: [] // To don't return the through table attributes
                   },
                 where: {
-                    'id': Number(req.params.idTag), // to get only one introduction with the id tag specified
+                    'id': id, // to get only one introduction with the id tag specified
                 },
             }],
 
