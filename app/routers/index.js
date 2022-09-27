@@ -1,4 +1,5 @@
 const express = require('express');
+
 const router = express.Router();
 
 // TODO : require les contrôleurs
@@ -6,6 +7,32 @@ const tagController = require('../controllers/tagController');
 const postController = require('../controllers/postController');
 const authController = require('../controllers/authController');
 const userController = require('../controllers/userController');
+
+const expressJSDocSwagger = require("express-jsdoc-swagger");
+
+const options = {
+    info: {
+        version: "1.0.0",
+        title: "API Linkodev",
+        description: "REST API - Interface for Linkodev",
+        license: {
+            name: "MIT",
+        },
+    },
+    security: {
+        BasicAuth: {
+            type: "http",
+            scheme: "basic",
+        },
+    },
+    swaggerUIPath: "/api-doc", // url où se trouve la doc
+    baseDir: __dirname,
+    // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
+    filesPattern: "./*.js",
+};
+
+expressJSDocSwagger(router)(options);
+
 
 
 /** ************************* */
@@ -100,59 +127,53 @@ router.get('/logout', authController.doLogout);
 /** **** */
 
  /**
-  * GET /users/{id}
-  * @summary Get details of one user ####### TODO #######
+  * GET /me
+  * @summary Get details of the user connected ####### TODO #######
   * @tags User
-  * @param {number} id.path - Id of the user
   * @return {User} 200 - success response - application/json 
   */
-router.get('/users/:id', userController.getUser);
+router.get('/me', userController.getUser);
 
 /**
-  * PATCH /users/{id}
-  * @summary Update details of one user ####### TODO #######
+  * PATCH /me
+  * @summary Update details of the user connected ####### TODO #######
   * @tags User
-  * @param {number} id.path - Id of the user
   * @return {User} 200 - success response - application/json 
   */
-router.patch('/users/:id', userController.updateUser);
+router.patch('/me', userController.updateUser);
 
  /**
-  * DELETE /users/{id}
-  * @summary Delete one user ####### TODO #######
+  * DELETE /me
+  * @summary Delete the user connected ####### TODO #######
   * @tags User
-  * @param {number} id.path - Id of the user
   * @return {User} 200 - success response - application/json 
   */
-router.delete('/users/:id', userController.deleteUser);
+router.delete('/me', userController.deleteUser);
 
 /**
-  * GET /users/{id}/posts
-  * @summary Get all posts of one user ####### TODO #######
+  * GET /me/posts
+  * @summary Get all posts of the user connected ####### TODO #######
   * @tags User
-  * @param {number} id.path - Id of the user
   * @return {array<Post>} 200 - success response - application/json 
   */
-router.get('/users/:id/posts', userController.getAllPosts);
+router.get('/me/posts', userController.getAllPosts);
 
  /**
-  * POST /users/{id}/posts
-  * @summary Add post to favorites ####### TODO #######
+  * POST /me/posts
+  * @summary Add post to the favorites of the user connected ####### TODO #######
   * @tags User
-  * @param {number} id.path - Id of the user
   * @return {User} 200 - success response - application/json 
   */
-router.post('/users/:id/posts', userController.addPost);
+router.post('/me/posts', userController.addPost);
 
  /**
-  * DELETE /users/{userId}/posts/{postId}
+  * DELETE /me/posts/{postId}
   * @summary Delete one post of favorites ####### TODO #######
   * @tags User
-  * @param {number} userId.path - Id of the user
   * @param {number} postId.path - Id of the post
   * @return {Post} 200 - success response - application/json 
   */
-router.delete('/users/:userId/posts/:postId', userController.deletePost);
+router.delete('/me/posts/:postId', userController.deletePost);
 
 /** ****** */
 /*  -POST- */
@@ -175,13 +196,13 @@ router.get('/posts', postController.getAllPosts);
 router.get('/posts/latest', postController.getLatestPosts);
  
 /**
-* GET /posts/tags/{idTag}/
-* @summary Generate a random post with the specified tag
+* GET /posts/random/
+* @summary Generate a random post with a specified tag
 * @tags Post
-* @param {number} idTag.path - Id of the tag
+* @param {array<integer>} tag.query - Array of tags to generate a random post
 * @return { Post } 200 - success response - application/json 
 */  
-router.get('/posts/tags/:idTag/', postController.getrandomPostById);
+router.get('/posts/random/', postController.getrandomPostById);
   
 /** *** */
 /*  TAG */

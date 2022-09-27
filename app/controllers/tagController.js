@@ -15,13 +15,11 @@ module.exports = {
 
     /**
      * Get a random introduction with a specific tag
-     * @param {*} req HTTP request to Express app
-     * @param {*} res HTTP response from Express app
+     * @param {integer} tagId id of the tag
+     * @returns {Introduction} Random introduction with the tag id
      */
-    async getRandomIntroWithTag(req, res) {
+    async getRandomIntroWithTag(tagId) {
         // TODO : See how we can have all tags of an introduction, not just the tag with specified id
-        const id = Number(req.params?.idTag);
-        console.log(id);
         const intro = await Introduction.findOne({
             attributes: ['id','content'], // If we just want content instead of all columns
             include: [{
@@ -31,7 +29,7 @@ module.exports = {
                     attributes: [] // To don't return the through table attributes
                   },
                 where: {
-                    'id': id, // to get only one introduction with the id tag specified
+                    'id': tagId, // to get only one introduction with the id tag specified
                 },
             }],
 
@@ -45,10 +43,10 @@ module.exports = {
 
     /**
      * Get a random body with a specific tag
-     * @param {*} req HTTP request to Express app
-     * @param {*} res HTTP response from Express app
+     * @param {integer} tagId id of the tag
+     * @returns {Body} Random body with the tag id
      */
-     async getRandomBodyWithTag(req, res) {
+     async getRandomBodyWithTag(tagId) {
         const body = await Body.findOne({
             attributes: ['id','content'], // If we just want content instead of all columns
             include: [{
@@ -58,7 +56,7 @@ module.exports = {
                     attributes: [] // To don't return the through table attributes
                   },
                 where: {
-                    'id': Number(req.params.idTag), // to get only one body with the id tag specified
+                    'id': tagId, // to get only one body with the id tag specified
                 },
             }],
 
@@ -72,10 +70,10 @@ module.exports = {
 
     /**
      * Get a random conclusion with a specific tag
-     * @param {*} req HTTP request to Express app
-     * @param {*} res HTTP response from Express app
+     * @param {integer} tagId id of the tag
+     * @returns {Conclusion} Random conclusion with the tag id
      */
-     async getRandomConclusionWithTag(req, res) {
+     async getRandomConclusionWithTag(tagId) {
         const conclusion = await Conclusion.findOne({
             attributes: ['id','content'], // If we just want content instead of all columns
             include: [{
@@ -85,7 +83,7 @@ module.exports = {
                     attributes: [] // To don't return the through table attributes
                   },
                 where: {
-                    'id': Number(req.params.idTag), // to get only one conclusion with the id tag specified
+                    'id': tagId, // to get only one conclusion with the id tag specified
                 },
             }],
 
@@ -96,4 +94,18 @@ module.exports = {
 
         return (conclusion);
     },
+
+    /**
+     * Get a random tag
+     * @returns {Tag} Random Tag
+     */
+    async getRandomTag() {
+        const tag = await Tag.findOne({
+            order: [
+                Sequelize.fn('RANDOM'), 
+            ]
+        });
+        console.log(tag);
+        return (tag);
+    }
 }

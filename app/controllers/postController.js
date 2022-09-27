@@ -1,7 +1,8 @@
 const { Post } = require("../models");
 const { getRandomIntroWithTag, 
         getRandomConclusionWithTag, 
-        getRandomBodyWithTag} = require("./tagController");
+        getRandomBodyWithTag,
+        getRandomTag} = require("./tagController");
 
 module.exports = {
 
@@ -16,8 +17,7 @@ module.exports = {
                 'introduction',   
                 'body', 
                 'conclusion'
-                    ],
-            
+                    ],       
         });
         res.json(posts);
     },
@@ -47,29 +47,44 @@ module.exports = {
 
     /**
      * Get a random post by Id
-     * @param {*} _ 
+     * @param {*} req HTTP request to Express app
      * @param {*} res HTTP response from Express app
      */
      async getrandomPostById(req, res) {
-        /* Generate a random introduction */
-        const randomIntro = await getRandomIntroWithTag(req,res);
-        // const randIntro = Object.values(randomIntro)[0];
-        /* Generate a random body */        
-        const randomBody = await getRandomBodyWithTag(req,res);
-        // const randBody = Object.values(randomBody)[0]; 
-        /* Generate a random conclusion */
-        const randomConclusion = await getRandomConclusionWithTag(req,res);
-        // const randConclu = Object.values(randomConclusion)[0]; 
-
-        /* A post contain introduction, body and conclusion */
-        const postGenerated = {
-            // introduction : randIntro.content,
-            // body: randBody.content ,
-            // conclusion: randConclu.content
-            introduction : randomIntro?.content ?? "", // it's like : if (randomIntro && randomIntro.content) { return randomIntro.content } else { return "" } 
-            body: randomBody?.content ?? "",
-            conclusion: randomConclusion?.content ?? ""
+        /* Get list of tags selected in front app */
+        const tags = req.query.tag;
+        let tagId;
+        if (tags) { // If one tag or more, get a random tag of this array
+            tagId = tags[Math.floor(Math.random()*tags.length)]
+        } else { // else, take a random tag
+            const tag = await getRandomTag(); 
+            tagId = tag.id;
         };
+
+        let postGenerated = [];
+        /* Generate a random introduction */
+        const randomIntro = await getRandomIntroWithTag(tagId);
+        if (randomIntro) postGenerated.push(randomIntro.content); // if an introduction exists with this tag, add it to the post
+
+        /* Generate a random body */        
+        const randomBody = await getRandomBodyWithTag(tagId);
+        if (randomBody) postGenerated.push(randomBody.content);
+
+        /* Generate a random conclusion */
+        const randomConclusion = await getRandomConclusionWithTag(tagId);
+        if (randomConclusion) postGenerated.push(randomConclusion.content);
+
+        postGenerated = postGenerated.join('\n');
+
+        // A post contain introduction, body and conclusion
+        /* Version with an object */
+        /* postGenerated = {
+            introduction : randomIntro?.content ?? "", 
+            body: randomBody?.content ?? "",
+            conclusion: randomConclusion?.content ?? "",
+        }*/
+        // (randomIntro?.content ?? "") is like : if (randomIntro && randomIntro.content) { return randomIntro.content } else { return "" };  
+        
         res.json (postGenerated);
     },
 
