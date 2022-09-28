@@ -1,5 +1,8 @@
 const { Post } = require("../models");
-const { getRandomIntroWithTag, getRandomConclusionWithTag, getRandomBodyWithTag} = require("./tagController");
+const { getRandomIntroWithTag, 
+        getRandomConclusionWithTag, 
+        getRandomBodyWithTag,
+        getRandomTag} = require("./tagController");
 
 module.exports = {
 
@@ -11,12 +14,24 @@ module.exports = {
     async getAllPosts(_, res) {
         const posts = await Post.findAll({
             include: [
-                'introduction',   
-                'body', 
-                'conclusion'
-                    ],
-            
+                {
+                    association: 'introduction',
+                    attributes: ['id','content']
+                },
+                {
+                    association: 'body',
+                    attributes: ['id','content']
+                },
+                {
+                    association: 'conclusion',
+                    attributes: ['id','content']
+                },
+            ],
+            attributes: ['id','updatedAt']
         });
+        // let postsArray = [];
+        // posts.forEach(post => post.content = post.introduction.content + post.body.content + post.conclusion.content );
+        // console.log(posts);
         res.json(posts);
     },
 
@@ -25,47 +40,81 @@ module.exports = {
      * @param {*} _ 
      * @param {*} res HTTP response from Express app
      */
-    async getLastestPosts(_, res) {
-        const lastestPosts = await Post.findAll({
+    async getLatestPosts(_, res) {
+        const latestPosts = await Post.findAll({
             limit: 3, 
             include: [
-                'introduction',   
-                'body', 
-                'conclusion',
-                    ],
+                {
+                    association: 'introduction',
+                    attributes: ['id','content']
+                },
+                {
+                    association: 'body',
+                    attributes: ['id','content']
+                },
+                {
+                    association: 'conclusion',
+                    attributes: ['id','content']
+                },
+            ],
             order: [
                 ['updatedAt', 'DESC'],
                 ],
             // attributes: { exclude: ['createdAt', 'updatedAt'] }
-            attributes : ['id','title','updatedAt']
+            attributes : ['id','updatedAt']
             
         });
-        res.json(posts);
+        res.json(latestPosts);
     },
 
     /**
      * Get a random post by Id
-     * @param {*} _ 
+     * @param {*} req HTTP request to Express app
      * @param {*} res HTTP response from Express app
      */
      async getrandomPostById(req, res) {
-        /* Generate a random introduction */
-        const randomIntro = await getRandomIntroWithTag(req,res);
-        const randIntro = Object.values(randomIntro)[0];
-        /* Generate a random body */        
-        const randomBody = await getRandomBodyWithTag(req,res);
-        const randBody = Object.values(randomBody)[0]; 
-        /* Generate a random conclusion */
-        const randomConclusion = await getRandomConclusionWithTag(req,res);
-        const randConclu = Object.values(randomConclusion)[0]; 
-
-        /* A post contain introduction, body and conclusion */
-        const postGenerated = {
-            introduction : randIntro.content,
-            body: randBody.content ,
-            conclusion: randConclu.content
+        /* Get list of tags selected in front app */
+        const tags = req.query.tags;
+        let tagId;
+        if (tags) { // If one tag or more, get a random tag of this array
+            tagId = tags[Math.floor(Math.random()*tags.length)]
+        } else { // else, take a random tag
+            const tag = await getRandomTag(); 
+            tagId = tag.id;
         };
-        res.json (postGenerated);
+
+        let postGenerated = [];
+        /* Generate a random introduction */
+        const randomIntro = await getRandomIntroWithTag(tagId);
+        if (randomIntro) postGenerated.push(randomIntro.content); // if an introduction exists with this tag, add it to the post
+
+        /* Generate a random body */        
+        const randomBody = await getRandomBodyWithTag(tagId);
+        if (randomBody) postGenerated.push(randomBody.content);
+
+        /* Generate a random conclusion */
+        const randomConclusion = await getRandomConclusionWithTag(tagId);
+        if (randomConclusion) postGenerated.push(randomConclusion.content);
+
+        postGenerated = postGenerated.join('\n');
+
+        const randomPost = {
+            introduction : randomIntro,
+            body: randomBody,
+            conclusion: randomConclusion,
+            content : postGenerated
+        }
+
+        // A post contain introduction, body and conclusion
+        /* Version with an object */
+        /* postGenerated = {
+            introduction : randomIntro?.content ?? "", 
+            body: randomBody?.content ?? "",
+            conclusion: randomConclusion?.content ?? "",
+        }*/
+        // (randomIntro?.content ?? "") is like : if (randomIntro && randomIntro.content) { return randomIntro.content } else { return "" };  
+        
+        res.json (randomPost);
     },
 
     /**

@@ -2,6 +2,9 @@
 const express = require('express');
 require('dotenv').config();
 
+//CORS
+const cors = require('cors');
+
 // Sessions
 const session = require('express-session'); 
 
@@ -14,38 +17,14 @@ const PORT = process.env.PORT || 5000
 // Init express server
 const app = express();
 
-/** *************** */
-/*  SWAGGER (begin)*/
-/** ************** */
-const expressJSDocSwagger = require("express-jsdoc-swagger");
-
-const options = {
-    info: {
-        version: "1.0.0",
-        title: "API Linkodev",
-        description: "REST API - Interface for Linkodev",
-        license: {
-            name: "MIT",
-        },
-    },
-    security: {
-        BasicAuth: {
-            type: "http",
-            scheme: "basic",
-        },
-    },
-    swaggerUIPath: "/api-doc", // url où se trouve la doc
-    baseDir: __dirname,
-    // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
-    filesPattern: "./**/*.js",
-};
-
-expressJSDocSwagger(app)(options);
-
-/** ************* */
-/*  SWAGGER (end)*/
-/** ************ */
-
+// CORS
+// const corsOptions = {
+//   origin: ['<http://linkodevapi.cyber-one.fr/>','<http://localhost:5050>'], // autorise des domaines
+//   optionsSuccessStatus: 200 // For legacy browser support
+// }
+// app.use(cors(corsOptions));
+/* WARNING : OPEN TO EVERYBODY */
+app.use(cors()); // Autorise toutes les requêtes CORS
 
 /* Sessions */
 app.use(session({
@@ -60,7 +39,6 @@ app.get('/', (req, res) => {
   console.log('>>  /');
   res.sendFile( __dirname + '/index.html');
 });
-
 
 
 app.use(router);
