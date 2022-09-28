@@ -14,11 +14,24 @@ module.exports = {
     async getAllPosts(_, res) {
         const posts = await Post.findAll({
             include: [
-                'introduction',   
-                'body', 
-                'conclusion'
-                    ],       
+                {
+                    association: 'introduction',
+                    attributes: ['id','content']
+                },
+                {
+                    association: 'body',
+                    attributes: ['id','content']
+                },
+                {
+                    association: 'conclusion',
+                    attributes: ['id','content']
+                },
+            ],
+            attributes: ['id','updatedAt']
         });
+        // let postsArray = [];
+        // posts.forEach(post => post.content = post.introduction.content + post.body.content + post.conclusion.content );
+        // console.log(posts);
         res.json(posts);
     },
 
@@ -31,15 +44,24 @@ module.exports = {
         const latestPosts = await Post.findAll({
             limit: 3, 
             include: [
-                'introduction',   
-                'body', 
-                'conclusion',
-                    ],
+                {
+                    association: 'introduction',
+                    attributes: ['id','content']
+                },
+                {
+                    association: 'body',
+                    attributes: ['id','content']
+                },
+                {
+                    association: 'conclusion',
+                    attributes: ['id','content']
+                },
+            ],
             order: [
                 ['updatedAt', 'DESC'],
                 ],
             // attributes: { exclude: ['createdAt', 'updatedAt'] }
-            attributes : ['id','title','updatedAt']
+            attributes : ['id','updatedAt']
             
         });
         res.json(latestPosts);
@@ -52,7 +74,7 @@ module.exports = {
      */
      async getrandomPostById(req, res) {
         /* Get list of tags selected in front app */
-        const tags = req.query.tag;
+        const tags = req.query.tags;
         let tagId;
         if (tags) { // If one tag or more, get a random tag of this array
             tagId = tags[Math.floor(Math.random()*tags.length)]
@@ -76,6 +98,13 @@ module.exports = {
 
         postGenerated = postGenerated.join('\n');
 
+        const randomPost = {
+            introduction : randomIntro,
+            body: randomBody,
+            conclusion: randomConclusion,
+            content : postGenerated
+        }
+
         // A post contain introduction, body and conclusion
         /* Version with an object */
         /* postGenerated = {
@@ -85,7 +114,7 @@ module.exports = {
         }*/
         // (randomIntro?.content ?? "") is like : if (randomIntro && randomIntro.content) { return randomIntro.content } else { return "" };  
         
-        res.json (postGenerated);
+        res.json (randomPost);
     },
 
     /**

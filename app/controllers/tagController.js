@@ -9,7 +9,7 @@ module.exports = {
      * @param {*} res HTTP response from Express app
      */
     async getAllTags(_, res) {
-        const tags = await Tag.findAll();
+        const tags = await Tag.findAll({attributes: ['id','title']});
         res.json(tags);
     },
 
@@ -19,7 +19,6 @@ module.exports = {
      * @returns {Introduction} Random introduction with the tag id
      */
     async getRandomIntroWithTag(tagId) {
-        // TODO : See how we can have all tags of an introduction, not just the tag with specified id
         const intro = await Introduction.findOne({
             attributes: ['id','content'], // If we just want content instead of all columns
             include: [{
@@ -27,12 +26,11 @@ module.exports = {
                 attributes: ['id','title'], // return some attributes of the tags
                 through: {
                     attributes: [] // To don't return the through table attributes
-                  },
-                where: {
-                    'id': tagId, // to get only one introduction with the id tag specified
                 },
             }],
-
+            where: {
+                'id': tagId, // to get only one introduction with the id tag specified
+            },
             order: [
                 Sequelize.fn('RANDOM'), // to order randomly in Postgres (we use findOne function, then we don't need to add option limit:1)
             ]
@@ -54,12 +52,11 @@ module.exports = {
                 attributes: ['id','title'], // return some attributes of the tags
                 through: {
                     attributes: [] // To don't return the through table attributes
-                  },
-                where: {
-                    'id': tagId, // to get only one body with the id tag specified
-                },
+                  }
             }],
-
+            where: {
+                'id': tagId, // to get only one body with the id tag specified
+            },
             order: [
                 Sequelize.fn('RANDOM'), // to order randomly in Postgres (we use findOne function, then we don't need to add option limit:1)
             ]
@@ -81,12 +78,11 @@ module.exports = {
                 attributes: ['id','title'], // return some attributes of the tags
                 through: {
                     attributes: [] // To don't return the through table attributes
-                  },
-                where: {
-                    'id': tagId, // to get only one conclusion with the id tag specified
-                },
+                  }          
             }],
-
+            where: {
+                'id': tagId, // to get only one conclusion with the id tag specified
+            },
             order: [
                 Sequelize.fn('RANDOM'), // to order randomly in Postgres (we use findOne function, then we don't need to add option limit:1)
             ]
