@@ -1,5 +1,3 @@
-
-
 module.exports = { 
     /**
      * Get details of one user ####### TODO #######

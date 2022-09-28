@@ -76,45 +76,53 @@ module.exports = {
         /* Get list of tags selected in front app */
         const tags = req.query.tags;
         let tagId;
-        if (tags) { // If one tag or more, get a random tag of this array
-            tagId = tags[Math.floor(Math.random()*tags.length)]
-        } else { // else, take a random tag
-            const tag = await getRandomTag(); 
-            tagId = tag.id;
-        };
+        try {
+            if (tags && tags.length > 0) { // If one tag or more, get a random tag of this array
+                tagId = tags[Math.floor(Math.random()*tags.length)]
+            } else { // else, take a random tag
+                const tag = await getRandomTag(); 
+                tagId = tag.id;
+            };
 
-        let postGenerated = [];
-        /* Generate a random introduction */
-        const randomIntro = await getRandomIntroWithTag(tagId);
-        if (randomIntro) postGenerated.push(randomIntro.content); // if an introduction exists with this tag, add it to the post
+            // Create post content
+            let postContent = [];
 
-        /* Generate a random body */        
-        const randomBody = await getRandomBodyWithTag(tagId);
-        if (randomBody) postGenerated.push(randomBody.content);
+            /* Generate a random introduction */
+            const randomIntro = await getRandomIntroWithTag(tagId);
+            if (randomIntro) postContent.push(randomIntro.content); // if an introduction exists with this tag, add it to the post
 
-        /* Generate a random conclusion */
-        const randomConclusion = await getRandomConclusionWithTag(tagId);
-        if (randomConclusion) postGenerated.push(randomConclusion.content);
+            /* Generate a random body */        
+            const randomBody = await getRandomBodyWithTag(tagId);
+            if (randomBody) postContent.push(randomBody.content);
 
-        postGenerated = postGenerated.join('\n');
+            /* Generate a random conclusion */
+            const randomConclusion = await getRandomConclusionWithTag(tagId);
+            if (randomConclusion) postContent.push(randomConclusion.content);
 
-        const randomPost = {
-            introduction : randomIntro,
-            body: randomBody,
-            conclusion: randomConclusion,
-            content : postGenerated
-        }
+            /* post content = intro content + \n + body content + \n + conclusion content */
+            postContent = postContent.join('\n');
 
-        // A post contain introduction, body and conclusion
-        /* Version with an object */
-        /* postGenerated = {
-            introduction : randomIntro?.content ?? "", 
-            body: randomBody?.content ?? "",
-            conclusion: randomConclusion?.content ?? "",
-        }*/
-        // (randomIntro?.content ?? "") is like : if (randomIntro && randomIntro.content) { return randomIntro.content } else { return "" };  
-        
-        res.json (randomPost);
+            const randomPost = {
+                introduction : randomIntro,
+                body: randomBody,
+                conclusion: randomConclusion,
+                content : postGenerated
+            }
+
+            // A post contain introduction, body and conclusion
+            /* Version with an object */
+            /* postGenerated = {
+                introduction : randomIntro?.content ?? "", 
+                body: randomBody?.content ?? "",
+                conclusion: randomConclusion?.content ?? "",
+            }*/
+            // (randomIntro?.content ?? "") is like : if (randomIntro && randomIntro.content) { return randomIntro.content } else { return "" };  
+            
+            res.json (randomPost);
+
+        } catch (error) {
+            res.status(500).json({error: "Internal Server Error (Get random post)"});
+        }   
     },
 
     /**

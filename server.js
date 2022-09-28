@@ -34,15 +34,17 @@ app.use(session({
 }));
 
 /* Routes */
-// Page d'accueil du serveur
+// Server home page
 app.get('/', (req, res) => {
   console.log('>>  /');
   res.sendFile( __dirname + '/index.html');
 });
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(router);
-app.use(express.urlencoded({ extended: true }));
+
 		
 // ******************* AUTH **************************** //
 // router.get('/signup', userController.showSignUp);   
