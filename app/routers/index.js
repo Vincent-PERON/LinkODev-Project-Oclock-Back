@@ -219,13 +219,13 @@ router.get('/posts', postController.getAllPosts);
 router.get('/posts/latest', postController.getLatestPosts);
  
 /**
-* GET /posts/random/
+* GET /posts/random
 * @summary Generate a random post with a specified tag
 * @tags Post
-* @param {array<integer>} tag.query - Array of tags to generate a random post
+* @param {array<integer>} tags.query - Array of tags to generate a random post
 * @return { Post } 200 - success response - application/json 
 */  
-router.get('/posts/random/', postController.getrandomPostById);
+router.get('/posts/random', postController.getrandomPostById);
   
 /** *** */
 /*  TAG */

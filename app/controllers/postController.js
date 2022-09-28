@@ -74,7 +74,7 @@ module.exports = {
      */
      async getrandomPostById(req, res) {
         /* Get list of tags selected in front app */
-        const tags = req.query.tag;
+        const tags = req.query.tags;
         let tagId;
         if (tags) { // If one tag or more, get a random tag of this array
             tagId = tags[Math.floor(Math.random()*tags.length)]
