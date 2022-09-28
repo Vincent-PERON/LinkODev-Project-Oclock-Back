@@ -49,7 +49,14 @@ expressJSDocSwagger(router)(options);
 /**
  * Schema of an introduction
  * @typedef {object} Introduction
- * @property {number} id.required - Id of the introduction
+ * @property {number} id - Id of the introduction
+ * @property {string} content - Content of the introduction
+ */
+
+/**
+ * Schema of an introduction with tags
+ * @typedef {object} IntroductionWithTags
+ * @property {number} id - Id of the introduction
  * @property {string} content - Content of the introduction
  * @property {array<Tag>} tags - Array of the tags of the introduction
  */
@@ -57,7 +64,14 @@ expressJSDocSwagger(router)(options);
 /**
  * Schema of a body
  * @typedef {object} Body
- * @property {number} id.required - Id of the body
+ * @property {number} id - Id of the body
+ * @property {string} content - Content of the body
+ */
+
+/**
+ * Schema of a body
+ * @typedef {object} BodyWithTags
+ * @property {number} id - Id of the body
  * @property {string} content - Content of the body
  * @property {array<Tag>} tags - Array of the tags of the body
  */
@@ -65,7 +79,14 @@ expressJSDocSwagger(router)(options);
 /**
  * Schema of a conclusion
  * @typedef {object} Conclusion
- * @property {number} id.required - Id of the conclusion
+ * @property {number} id - Id of the conclusion
+ * @property {string} content - Content of the conclusion
+ */
+
+/**
+ * Schema of a conclusion
+ * @typedef {object} ConclusionWithTags
+ * @property {number} id - Id of the conclusion
  * @property {string} content - Content of the conclusion
  * @property {array<Tag>} tags - Array of the tags of the conclusion
  */
@@ -73,9 +94,11 @@ expressJSDocSwagger(router)(options);
 /**
  * Schema of a post
  * @typedef {object} Post
- * @property {string} introduction - Introduction of the post
- * @property {string} body - Body of the post
- * @property {string} conclusion - Conclusion of the post
+ * @property {integer} id - Id of the post
+ * @property {string} UpdatedAt - Updated date of the post
+ * @property {Introduction} introduction - Introduction of the post
+ * @property {Body} body - Body of the post
+ * @property {Conclusion} conclusion - Conclusion of the post
  */
 
 /**
@@ -183,7 +206,7 @@ router.delete('/me/posts/:postId', userController.deletePost);
 * GET /posts
 * @summary Get all posts
 * @tags Post
-* @return {array<Tag>} 200 - success response - application/json 
+* @return {array<Post>} 200 - success response - application/json 
 */
 router.get('/posts', postController.getAllPosts);
  
@@ -191,7 +214,7 @@ router.get('/posts', postController.getAllPosts);
 * GET /posts/latest
 * @summary Get 3 latest posts
 * @tags Post
-* @return {array<Tag>} 200 - success response - application/json 
+* @return {array<Post>} 200 - success response - application/json 
 */
 router.get('/posts/latest', postController.getLatestPosts);
  
