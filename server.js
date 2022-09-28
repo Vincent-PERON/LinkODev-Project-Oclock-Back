@@ -2,6 +2,9 @@
 const express = require('express');
 require('dotenv').config();
 
+//CORS
+const cors = require('cors');
+
 // Sessions
 const session = require('express-session'); 
 
@@ -13,6 +16,15 @@ const PORT = process.env.PORT || 5000
 
 // Init express server
 const app = express();
+
+// CORS
+// const corsOptions = {
+//   origin: ['<http://linkodevapi.cyber-one.fr/>','<http://localhost:5050>'], // autorise des domaines
+//   optionsSuccessStatus: 200 // For legacy browser support
+// }
+// app.use(cors(corsOptions));
+/* WARNING : OPEN TO EVERYBODY */
+app.use(cors()); // Autorise toutes les requêtes CORS
 
 /* Sessions */
 app.use(session({

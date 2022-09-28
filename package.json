@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/O-clock-Flamel/projet-19-o-linkekoi-back#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.0.2",
     "express": "^4.18.1",
     "express-jsdoc-swagger": "^1.8.0",
