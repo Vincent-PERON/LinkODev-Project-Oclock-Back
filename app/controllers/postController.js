@@ -73,48 +73,55 @@ module.exports = {
      * @param {*} res HTTP response from Express app
      */
      async getrandomPostById(req, res) {
-        /* Get list of tags selected in front app */
-        const tags = req.query.tags;
-        let tagId;
-        if (tags) { // If one tag or more, get a random tag of this array
-            tagId = tags[Math.floor(Math.random()*tags.length)]
-        } else { // else, take a random tag
-            const tag = await getRandomTag(); 
-            tagId = tag.id;
-        };
+        try {
+            let tagId;
+            /* Get list of tags selected in front app*/
+            let tags = req.query.tags;
 
-        let postGenerated = [];
-        /* Generate a random introduction */
-        const randomIntro = await getRandomIntroWithTag(tagId);
-        if (randomIntro) postGenerated.push(randomIntro.content); // if an introduction exists with this tag, add it to the post
+            // if the format of tags is not a object, convert it (array is an object in js)
+            if (tags && typeof(tags) !== 'object') tags = JSON.parse(tags);
 
-        /* Generate a random body */        
-        const randomBody = await getRandomBodyWithTag(tagId);
-        if (randomBody) postGenerated.push(randomBody.content);
+            // If tags is a number, take its id
+            if (Number.isInteger(tags)) tagId = tags;
+            // If tags is an array with one tag or more tags, get a random tag of this array
+            else if (tags && tags.length > 0) tagId = parseInt(tags[Math.floor(Math.random()*tags.length)],10);  
+            // else, take a random tag       
+            else { 
+                const tag = await getRandomTag(); 
+                tagId = tag.id;
+            };
 
-        /* Generate a random conclusion */
-        const randomConclusion = await getRandomConclusionWithTag(tagId);
-        if (randomConclusion) postGenerated.push(randomConclusion.content);
+            // Create post content
+            let postContent = [];
 
-        postGenerated = postGenerated.join('\n');
+            /* Generate a random introduction */
+            const randomIntro = await getRandomIntroWithTag(tagId);
+            if (randomIntro) postContent.push(randomIntro.content); // if an introduction exists with this tag, add it to the post
 
-        const randomPost = {
-            introduction : randomIntro,
-            body: randomBody,
-            conclusion: randomConclusion,
-            content : postGenerated
-        }
+            /* Generate a random body */        
+            const randomBody = await getRandomBodyWithTag(tagId);
+            if (randomBody) postContent.push(randomBody.content);
 
-        // A post contain introduction, body and conclusion
-        /* Version with an object */
-        /* postGenerated = {
-            introduction : randomIntro?.content ?? "", 
-            body: randomBody?.content ?? "",
-            conclusion: randomConclusion?.content ?? "",
-        }*/
-        // (randomIntro?.content ?? "") is like : if (randomIntro && randomIntro.content) { return randomIntro.content } else { return "" };  
-        
-        res.json (randomPost);
+            /* Generate a random conclusion */
+            const randomConclusion = await getRandomConclusionWithTag(tagId);
+            if (randomConclusion) postContent.push(randomConclusion.content);
+
+            /* post content = intro content + \n + body content + \n + conclusion content */
+            postContent = postContent.join('\n');
+
+            const randomPost = {
+                introduction : randomIntro,
+                body: randomBody,
+                conclusion: randomConclusion,
+                content : postContent
+            }
+
+            res.json (randomPost);
+
+        } catch (error) {
+            res.status(500).json({error: "Internal Server Error (Get random post)"});
+            console.error(error);
+        }   
     },
 
     /**
@@ -123,7 +130,7 @@ module.exports = {
      * @param {*} res HTTP response from Express app
      */
     async deletePost(req, res) {
-        const post = await Post.findByPk(req.params.id, )
+        const post = await Post.findByPk(req.params.id)
         },
 
 }
