@@ -46,7 +46,7 @@ const db = {
             const bodies = await Body.bulkCreate(data.bodies);
             const conclusions = await Conclusion.bulkCreate(data.conclusions);
             const tags = await Tag.bulkCreate(data.tags);
-            await User.bulkCreate(data.users);
+            const users = await User.bulkCreate(data.users);
             await Post.bulkCreate(data.posts);
 
             
@@ -55,19 +55,25 @@ const db = {
             // const intro1 = await Introduction.findByPk(1);
             // await intro1.setTags(tag1);
 
-            try{
-                // ADD TAGS
+            introductions.forEach((introduction) => introduction.setTags((data.introductionsTags.find((introductionTags)=> introductionTags.introduction_id === introduction.id)).tags_id));
+            bodies.forEach((body) => body.setTags((data.bodiesTags.find((bodyTags)=> bodyTags.body_id === body.id)).tags_id));
+            conclusions.forEach((conclusion) => conclusion.setTags((data.conclusionsTags.find((conclusionTags)=> conclusionTags.conclusion_id === conclusion.id)).tags_id));
+            users.forEach((user) => user.setPosts((data.usersPosts.find((userPosts)=> userPosts.user_id === user.id)).posts_id));
 
-                // Add 2 tags for each introduction : n and n+1
-                introductions.forEach((item,index) => item.setTags([1+index,1+(1+index)%introductions.length]) );
-                // Add 2 tags for each body : n and n+1
-                bodies.forEach((item,index) => item.setTags([1+index,1+(1+index)%bodies.length]) );
-                // Add 2 tags for each conclusion : n and n+1
-                conclusions.forEach((item,index) => item.setTags([1+index,1+(1+index)%conclusions.length]) );
 
-            } catch (error) {
-                console.error('Error with adding tags: ', error);
-            }    
+            // try{
+            //     // ADD TAGS
+
+            //     // Add 2 tags for each introduction : n and n+1
+            //     introductions.forEach((item,index) => item.setTags([1+index,1+(1+index)%introductions.length]) );
+            //     // Add 2 tags for each body : n and n+1
+            //     bodies.forEach((item,index) => item.setTags([1+index,1+(1+index)%bodies.length]) );
+            //     // Add 2 tags for each conclusion : n and n+1
+            //     conclusions.forEach((item,index) => item.setTags([1+index,1+(1+index)%conclusions.length]) );
+
+            // } catch (error) {
+            //     console.error('Error with adding tags: ', error);
+            // }    
 
         } catch (error) {
             console.error('Error with the seeding of tables: ', error);
@@ -91,7 +97,7 @@ db.testConnection()
                         console.error(error)
                     })
                 })
-    })
+   })
 ;
 
 
