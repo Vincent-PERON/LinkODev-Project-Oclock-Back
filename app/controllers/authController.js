@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const { User } = require("../models");
 
 
@@ -17,6 +18,7 @@ module.exports = {
      * @param {*} res HTTP response from Express app
     */
     async doLogin(req,res){
+
         try {
             // find user
             console.log(req.body)
@@ -27,20 +29,28 @@ module.exports = {
                     }
                 }
             );
-            
             // if user not found, send a message
             if (!foundUser) {
                 return res.status(401).json({error: "Email or password is incorrect."});
             }
 
-            // user exists, test the password
-            const validPassword = foundUser.password === req.body.password; // TODO : use bcrypt or similar
+            // if user exists, Password verification
+            //const passw = await bcrypt.hash("estelle1234", 10);
+            //console.log(passw);
 
-            // if password incorrect, send a message
-            if (!validPassword) {
-                return res.status(401).json({error: "Email or password is incorrect."});
-            }
-            res.json(foundUser);
+            const validPassword = await bcrypt.compare(req.body.password, foundUser.password); 
+            
+            // if password is ok
+            if (validPassword) {     
+                // req.session.user = user;  // ON STOCK LE USER DANS LA SESSION
+                // delete req.session.user.password;   // on n'a ps besoin de stocker le mdp, on le supprime donc
+                res.json({name:foundUser.fullName});
+                
+
+            // if password is incorrect, send a message
+            } else {   
+                return res.status(401).json({error: "Email or password is incorrect."});  
+        }
         } catch (error) {
             res.status(500).json({error: "Internal Server Error (Login)"});
         }

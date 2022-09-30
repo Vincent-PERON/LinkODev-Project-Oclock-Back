@@ -131,6 +131,7 @@ router.post('/register', authController.doRegister);
  * POST /login
  * @summary Validate form authentication ####### TODO #######
  * @tags Authentication / Register
+ * @param {User} request.body - email of the user
  * @return  200 - success response - application/json 
  */
 router.post('/login', authController.doLogin);

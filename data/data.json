@@ -5,7 +5,7 @@
             "firstname": "Estelle",
             "lastname":"Oclock",
             "email":"estelle@oclock.io",
-            "password":"estelle1234"
+            "password":"$2b$10$0vT/dMs7BBCNZKwmFjo2Le3Kq1qkfwWc87spOU/jAE5bQ18f9mibG"
     
         },
         {
@@ -13,7 +13,7 @@
             "firstname": "Alexandre",
             "lastname":"Oclock",
             "email":"alex@oclock.io",
-            "password":"alex1234"
+            "password":"$2b$10$g4Yxh1XrziGuCuc3Sv2HTeG7y26w8pojF7nZMvEqM2GjJGuxpmD32"
         }
     
     ],
