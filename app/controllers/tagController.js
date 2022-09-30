@@ -27,10 +27,10 @@ module.exports = {
                 through: {
                     attributes: [] // To don't return the through table attributes
                 },
+                where: {
+                    'id': tagId, // to get only one introduction with the id tag specified
+                },
             }],
-            where: {
-                'id': tagId, // to get only one introduction with the id tag specified
-            },
             order: [
                 Sequelize.fn('RANDOM'), // to order randomly in Postgres (we use findOne function, then we don't need to add option limit:1)
             ]
@@ -52,11 +52,11 @@ module.exports = {
                 attributes: ['id','title'], // return some attributes of the tags
                 through: {
                     attributes: [] // To don't return the through table attributes
-                  }
+                },
+                where: {
+                    'id': tagId, // to get only one body with the id tag specified
+                },
             }],
-            where: {
-                'id': tagId, // to get only one body with the id tag specified
-            },
             order: [
                 Sequelize.fn('RANDOM'), // to order randomly in Postgres (we use findOne function, then we don't need to add option limit:1)
             ]
@@ -78,11 +78,11 @@ module.exports = {
                 attributes: ['id','title'], // return some attributes of the tags
                 through: {
                     attributes: [] // To don't return the through table attributes
-                  }          
+                },
+                where: {
+                    'id': tagId, // to get only one conclusion with the id tag specified
+                }, 
             }],
-            where: {
-                'id': tagId, // to get only one conclusion with the id tag specified
-            },
             order: [
                 Sequelize.fn('RANDOM'), // to order randomly in Postgres (we use findOne function, then we don't need to add option limit:1)
             ]
