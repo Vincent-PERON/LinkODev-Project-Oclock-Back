@@ -2,7 +2,7 @@
 const express = require('express');
 require('dotenv').config();
 
-//CORS
+// CORS Library
 const cors = require('cors');
 
 // Sessions
@@ -30,7 +30,7 @@ app.use(cors()); // Autorise toutes les requêtes CORS
 app.use(session({
     saveUninitialized: true, 
     resave: true, 
-    secret: process.env.SESSION_SECRET || 'Change Me!'      // la clé "secret" est gérée dans le .env  si le secret n'est pas defini ce sera "change Me" qui sera utilisé
+    secret: process.env.SESSION_SECRET || 'LinkODev-website'      // la clé "secret" est gérée dans le .env  si le secret n'est pas defini ce sera "change Me" qui sera utilisé
 }));
 
 /* Routes */
@@ -40,9 +40,10 @@ app.get('/', (req, res) => {
   res.sendFile( __dirname + '/index.html');
 });
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(router);
-app.use(express.urlencoded({ extended: true }));
 		
 // ******************* AUTH **************************** //
 // router.get('/signup', userController.showSignUp);   
