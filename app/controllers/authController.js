@@ -1,5 +1,7 @@
+const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
-const { User } = require("../models");
+const { User, RefreshToken } = require("../models");
+const jwt = require('jsonwebtoken');
 
 
 module.exports = { 
@@ -18,9 +20,8 @@ module.exports = {
      * @param {*} res HTTP response from Express app
     */
     async doLogin(req,res){
-
         try {
-            // find user
+            /* 1. On cherche l'utilisateur en bdd via son email */
             console.log(req.body)
             const foundUser = await User.findOne(
                 {
@@ -29,31 +30,41 @@ module.exports = {
                     }
                 }
             );
-            // if user not found, send a message
+
+            /* 2. Si l'utilisateur est introuvable on renvoie une ereur */
             if (!foundUser) {
                 return res.status(401).json({error: "Email or password is incorrect."});
             }
 
-            // if user exists, Password verification
-            //const passw = await bcrypt.hash("estelle1234", 10);
-            //console.log(passw);
-
+            /* 3. Si l'email est connue en BDD on compare le mdp envoyé avec le mdp en BDD */
             const validPassword = await bcrypt.compare(req.body.password, foundUser.password); 
             
-            // if password is ok
-            if (validPassword) {     
-                // req.session.user = user;  // ON STOCK LE USER DANS LA SESSION
-                // delete req.session.user.password;   // on n'a ps besoin de stocker le mdp, on le supprime donc
-                res.json({name:foundUser.fullName});
-                
-
-            // if password is incorrect, send a message
-            } else {   
+            /* 4. Si le mdp ne correspond pas, on revoie un message d'erreur */
+            if (!validPassword) {   
                 return res.status(401).json({error: "Email or password is incorrect."});  
-        }
-        } catch (error) {
-            res.status(500).json({error: "Internal Server Error (Login)"});
-        }
+            }
+            
+            /* 4.1 Si le mot de passe correspond, on passe à la suite ....
+
+            /* 5. On créer le token JWT */
+            const accessToken = jwt.sign(
+                { firstName: foundUser.firstname, lastName: foundUser.lastname },
+                    process.env.ACCESS_TOKEN_SECRET,
+                {
+                  algorithm: process.env.ACCESS_TOKEN_ALGORITHM,
+                  expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN, // 
+                  subject: foundUser.id.toString()
+                }
+              );
+
+             /* 6. On envoie au client le JWT  */
+            return res.json({ accessToken });
+
+            /* Si probleme connexion avec la BDD */
+            } catch (error) {
+                 res.status(500).json({error: "Internal Server Error (Login)"});
+                 console.error(error);
+            }
     },
 
     /**
