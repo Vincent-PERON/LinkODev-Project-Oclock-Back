@@ -167,7 +167,7 @@ router.use('/me*',auth);
 
  /**
   * GET /me
-  * @summary Get details of the user connected ####### TODO #######
+  * @summary Get details of the user connected 
   * @tags User
   * @param {string} apitoken.header - JWT Token
   * @return {User} 200 - success response - application/json 
@@ -194,7 +194,7 @@ router.delete('/me', userController.deleteUser);
 
 /**
   * GET /me/posts
-  * @summary Get all posts of the user connected ####### TODO #######
+  * @summary Get all posts of the user connected 
   * @tags User
   * @param {string} apitoken.header - JWT Token
   * @return {array<Post>} 200 - success response - application/json 

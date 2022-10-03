@@ -44,6 +44,7 @@ module.exports = {
     async getAlluserPosts(req,res){
         const userId = parseInt(req.user.sub);
         const userPosts = await User.findByPk(userId, {
+            attributes: ['id','firstname','lastname'],
             include: [
                 {
                     association: 'posts',
