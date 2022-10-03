@@ -111,6 +111,16 @@ expressJSDocSwagger(router)(options);
  * @property {string} password - Password of the user
  */
 
+/**
+ * Schema of a userForm
+ * @typedef {object} UserForm
+ * @property {string} firstname - Firstname of the user
+ * @property {string} lastname - Lastname of the user
+ * @property {string} email - EMail of the user
+ * @property {string} password - Password of the user
+ * @property {string} confirmPassword - Password of the user
+ */
+
 
 /** ******* */
 /*  ROUTES */
@@ -122,15 +132,16 @@ expressJSDocSwagger(router)(options);
 
 /**
 * POST /register
-* @summary Validate form register ####### TODO #######
+* @summary Validate form register 
 * @tags Authentication / Register
+ * @param {UserForm} request.body - email of the user
 * @return  200 - success response - application/json 
 */
 router.post('/register', authController.doRegister);
 
 /**
  * POST /login
- * @summary Validate form authentication ####### TODO #######
+ * @summary Validate form authentication 
  * @tags Authentication / Register
  * @param {User} request.body - email of the user
  * @return  200 - success response - application/json 
@@ -138,7 +149,7 @@ router.post('/register', authController.doRegister);
 router.post('/login', authController.doLogin);
 
 
- /**
+/**
  * GET /logout
  * @summary Logout a user ####### TODO #######
  * @tags Authentication / Register

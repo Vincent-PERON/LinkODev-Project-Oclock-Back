@@ -15,17 +15,17 @@ User.init({
     
     password: { 
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
     },
 
     firstname: { 
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
     },
 
     lastname:  { 
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
     },
     
     fullname : {
