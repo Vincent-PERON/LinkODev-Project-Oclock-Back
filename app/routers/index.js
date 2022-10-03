@@ -185,7 +185,7 @@ router.patch('/me', userController.updateUser);
 
  /**
   * DELETE /me
-  * @summary Delete the user connected ####### TODO #######
+  * @summary Delete the user connected 
   * @tags User
   * @param {string} apitoken.header - JWT Token
   * @return {User} 200 - success response - application/json 

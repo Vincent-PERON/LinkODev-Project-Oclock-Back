@@ -2,7 +2,7 @@ const { User, Post } = require("../models");
 
 module.exports = { 
     /**
-     * Get details of one user ####### TODO #######
+     * Get details of one user 
      * @param {*} req HTTP request to Express app
      * @param {*} res HTTP response from Express app
      */
@@ -28,16 +28,23 @@ module.exports = {
     },
 
     /**
-     * Delete one user ####### TODO #######
+     * Delete one user
      * @param {*} req HTTP request to Express app
      * @param {*} res HTTP response from Express app
      */
     async deleteUser(req,res){
-        res.json("deleteUser");
+        const userId = parseInt(req.user.sub);
+
+        await User.destroy({
+            where: {
+                id: userId
+            }
+        });
+        res.json("User Deleted");
     },
 
     /**
-     * Get all posts of one user ####### TODO #######      
+     * Get all posts of one user     
      * @param {*} req HTTP request to Express app
      * @param {*} res HTTP response from Express app
     */
@@ -68,7 +75,6 @@ module.exports = {
                     },
                 },
         ] 
-
         });
         res.json(userPosts);
     },
@@ -87,6 +93,47 @@ module.exports = {
      * @param {*} res HTTP response from Express app
      */
         async deletePost(req,res){
-            res.json("deletePost");
+            // Get user
+            const userId = parseInt(req.user.sub);
+            const user = await User.findByPk(userId);
+
+            // Get post
+            const postToDelete = await Post.findByPk(req.params.id);
+
+
+            const userPosts = await User.findByPk(userId, {
+                attributes: ['id','firstname','lastname'],
+                include: [
+                    {
+                        association: 'posts',
+                        include: [
+                            {
+                                association: 'introduction',
+                                attributes: ['id','content']
+                            },
+                            {
+                                association: 'body',
+                                attributes: ['id','content']
+                            },
+                            {
+                                association: 'conclusion',
+                                attributes: ['id','content']
+                            },
+                        ],
+                        attributes: ['id','updatedAt'],
+                        through: {
+                            attributes: [] // To don't return the through table attributes
+                        },
+                    },
+            ]
+            });
+
+            await Post.destroy({
+                where: {
+                    id: userId
+                }
+            });
+
+        res.json(userPosts);
         }
 }
