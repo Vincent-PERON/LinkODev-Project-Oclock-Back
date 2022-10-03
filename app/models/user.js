@@ -7,19 +7,26 @@ User.init({
     email: {
         type: Sequelize.STRING,
         unique: true,
+        allowNull: false,
         validate: {
             isEmail: true,
         }
     },
     
-    password: Sequelize.STRING,
-
-    firstname: {
+    password: { 
         type: Sequelize.STRING,
-        allowNull: true
+        allowNull: false,
     },
 
-    lastname: Sequelize.STRING,
+    firstname: { 
+        type: Sequelize.STRING,
+        allowNull: false,
+    },
+
+    lastname:  { 
+        type: Sequelize.STRING,
+        allowNull: false,
+    },
     
     fullName : {
         type: Sequelize.VIRTUAL,
