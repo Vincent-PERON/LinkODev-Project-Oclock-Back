@@ -121,6 +121,12 @@ expressJSDocSwagger(router)(options);
  * @property {string} confirmPassword - Password of the user
  */
 
+/**
+ * Schema of a body to add post
+ * @typedef {object} BodyNewPost
+ * @property {number} postId - id of the post to add
+ */
+
 
 /** ******* */
 /*  ROUTES */
@@ -206,6 +212,7 @@ router.get('/me/posts', userController.getAlluserPosts);
   * @summary Add post to the favorites of the user connected ####### TODO #######
   * @tags User
   * @param {string} apitoken.header - JWT Token
+  * @param {BodyNewPost} request.body - Body of the post request to add a new post to an user
   * @return {User} 200 - success response - application/json 
   */
 router.post('/me/posts', userController.addPost);
