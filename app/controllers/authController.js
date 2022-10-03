@@ -122,9 +122,11 @@ module.exports = {
                     subject: foundUser.id.toString()
                 }
                 );
+            
+                const user= foundUser.firstname;
 
              /* 6. On envoie au client le JWT  */
-            return res.json({ accessToken });
+            return res.json({ accessToken, user });
 
             /* Si probleme connexion avec la BDD */
             } catch (error) {
