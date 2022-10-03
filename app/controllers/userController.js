@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Post } = require("../models");
 
 module.exports = { 
     /**
@@ -41,10 +41,35 @@ module.exports = {
      * @param {*} req HTTP request to Express app
      * @param {*} res HTTP response from Express app
     */
-    async getAllPosts(req,res){
-        // 1 je recupere l'id de l'utiliseur 
-        // 2 faire requete axios 
-        res.json("getAllPosts");
+    async getAlluserPosts(req,res){
+        const userId = parseInt(req.user.sub);
+        const userPosts = await User.findByPk(userId, {
+            include: [
+                {
+                    association: 'posts',
+                    include: [
+                        {
+                            association: 'introduction',
+                            attributes: ['id','content']
+                        },
+                        {
+                            association: 'body',
+                            attributes: ['id','content']
+                        },
+                        {
+                            association: 'conclusion',
+                            attributes: ['id','content']
+                        },
+                    ],
+                    attributes: ['id','updatedAt'],
+                    through: {
+                        attributes: [] // To don't return the through table attributes
+                    },
+                },
+        ] 
+
+        });
+        res.json(userPosts);
     },
 
     /** Add post to favorites ####### TODO #######

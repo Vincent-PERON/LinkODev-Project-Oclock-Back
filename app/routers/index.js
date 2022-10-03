@@ -199,7 +199,7 @@ router.delete('/me', userController.deleteUser);
   * @param {string} apitoken.header - JWT Token
   * @return {array<Post>} 200 - success response - application/json 
   */
-router.get('/me/posts', userController.getAllPosts);
+router.get('/me/posts', userController.getAlluserPosts);
 
  /**
   * POST /me/posts
