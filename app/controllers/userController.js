@@ -1,4 +1,4 @@
-
+const { User } = require("../models");
 
 module.exports = { 
     /**
@@ -7,7 +7,15 @@ module.exports = {
      * @param {*} res HTTP response from Express app
      */
     async getUser(req,res){
-        res.json("getUser");
+        const foundUser = await User.findOne(
+            {   
+                attributes: ['email'],
+                where : {
+                    id: req.user.sub
+                }
+            }
+        );
+        res.json(foundUser);
     },
 
     /**
