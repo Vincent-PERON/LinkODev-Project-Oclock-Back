@@ -117,11 +117,11 @@ module.exports = {
                 { firstName: foundUser.firstname, lastName: foundUser.lastname },
                     process.env.ACCESS_TOKEN_SECRET,
                 {
-                  algorithm: process.env.ACCESS_TOKEN_ALGORITHM,
-                  expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN, // 
-                  subject: foundUser.id.toString()
+                    algorithm: process.env.ACCESS_TOKEN_ALGORITHM,
+                    expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN, // 
+                    subject: foundUser.id.toString()
                 }
-              );
+                );
 
              /* 6. On envoie au client le JWT  */
             return res.json({ accessToken });

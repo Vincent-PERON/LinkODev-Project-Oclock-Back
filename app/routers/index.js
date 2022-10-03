@@ -132,7 +132,7 @@ expressJSDocSwagger(router)(options);
 
 /**
 * POST /register
-* @summary Validate form register ####### TODO #######
+* @summary Validate form register 
 * @tags Authentication / Register
  * @param {UserForm} request.body - email of the user
 * @return  200 - success response - application/json 
