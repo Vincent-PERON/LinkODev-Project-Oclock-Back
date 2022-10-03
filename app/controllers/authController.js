@@ -10,7 +10,7 @@ module.exports = {
      * @param {*} req HTTP request to Express app
      * @param {*} res HTTP response from Express app
     */
-     async doRegister(req,res){
+    async doRegister(req,res){
         res.json("doRegister");
     },
 
@@ -22,7 +22,6 @@ module.exports = {
     async doLogin(req,res){
         try {
             /* 1. On cherche l'utilisateur en bdd via son email */
-            console.log(req.body)
             const foundUser = await User.findOne(
                 {
                     where : {
@@ -51,19 +50,21 @@ module.exports = {
                 { firstName: foundUser.firstname, lastName: foundUser.lastname },
                     process.env.ACCESS_TOKEN_SECRET,
                 {
-                  algorithm: process.env.ACCESS_TOKEN_ALGORITHM,
-                  expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN, // 
-                  subject: foundUser.id.toString()
+                    algorithm: process.env.ACCESS_TOKEN_ALGORITHM,
+                    expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN, // 
+                    subject: foundUser.id.toString()
                 }
-              );
+            );
+            // const userReturned = foundUser.firstname + ' ' + foundUser.lastname;
+            const user= foundUser.firstname;
 
-             /* 6. On envoie au client le JWT  */
-            return res.json({ accessToken });
+            /* 6. On envoie au client le JWT  */
+            return res.json({ accessToken, user });
 
             /* Si probleme connexion avec la BDD */
             } catch (error) {
-                 res.status(500).json({error: "Internal Server Error (Login)"});
-                 console.error(error);
+                res.status(500).json({error: "Internal Server Error (Login)"});
+                console.error(error);
             }
     },
 

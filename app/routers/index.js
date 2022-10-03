@@ -3,7 +3,7 @@ const auth = require("./../middleware/authMiddleware");
 
 const router = express.Router();
 
-// TODO : require les contrôleurs
+/* Controllers */ 
 const tagController = require('../controllers/tagController');
 const postController = require('../controllers/postController');
 const authController = require('../controllers/authController');

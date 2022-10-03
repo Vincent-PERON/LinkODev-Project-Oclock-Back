@@ -7,7 +7,7 @@ module.exports = {
      * @param {*} res HTTP response from Express app
      */
     async getUser(req,res){
-        res.json("getUser");
+        res.json(req.user);
     },
 
     /**
@@ -34,6 +34,8 @@ module.exports = {
      * @param {*} res HTTP response from Express app
     */
     async getAllPosts(req,res){
+        // 1 je recupere l'id de l'utiliseur 
+        // 2 faire requete axios 
         res.json("getAllPosts");
     },
 

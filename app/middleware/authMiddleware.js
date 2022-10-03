@@ -1,11 +1,9 @@
-const dotenv = require('dotenv');
 const jwt = require("jsonwebtoken");
 
 const verifyToken = (req, res, next) => {
-    console.log(req.headers)
-  const token =
-    req.body.token || req.query.token || req.headers["apitoken"];
-
+  /* 1 Test if token is present in body, query, header */
+  const token = req.headers["apitoken"];
+  console.log(req.headers);
   if (!token) {
     return res.status(403).send("A token is required for authentication");
   }
