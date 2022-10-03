@@ -1,7 +1,27 @@
-const dotenv = require('dotenv');
+// const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
-const { User, RefreshToken } = require("../models");
+const { User } = require("../models");
+
+/* JWT Token */
 const jwt = require('jsonwebtoken');
+
+/* Password and email Validator Module */
+const assert = require('assert');
+const validator = require('email-validator');
+const passwordValidator = require('password-validator');
+
+// Create a password schema
+const schema = new passwordValidator();
+
+// Add properties to it
+schema
+			    .is().min(8)                                    // Minimum length 8
+			    .is().max(100)                                  // Maximum length 100
+			    .has().uppercase()                              // Must have uppercase letters
+			    .has().lowercase()                              // Must have lowercase letters
+			    .has().digits(2)                                // Must have at least 2 digits
+			    .has().not().spaces()                           // Should not have spaces
+			    .is().not().oneOf(['Passw0rd', 'Password123','Azerty','azerty']); // Blacklist these values
 
 
 module.exports = { 
@@ -10,9 +30,55 @@ module.exports = {
      * @param {*} req HTTP request to Express app
      * @param {*} res HTTP response from Express app
     */
-     async doRegister(req,res){
-        res.json("doRegister");
+    async doRegister(req,res){
+        // ETAPE 1 : Verification de l'intégrité des données
+			
+        try {
+           
+            // Check if firstname or lastname is empty
+            assert.ok((req.body.firstname && req.body.lastname),'Vous devez renseigner votre nom et prénom');
+
+            //  -> L'email est libre
+            const user = await User.findOne({
+                where: {
+                    email: req.body.email
+                }
+            });
+
+            /* Asserts
+            ** We use "Assert" a Node's module wich say "If condition is false, I show an error)"
+            */
+
+            /*  -> Check if user is in Database */
+            assert.ok(!Boolean(user),`L'utilisateur ${req.body.email} existe déjà`);  
+
+            //  -> Email is valide (module "email-avlidator")
+            assert.ok(validator.validate(req.body.email), `${req.body.email} n'est pas un email valide.`);  
+
+            //  -> The 2 passwords (pwd + confim) are the same
+            assert.ok(req.body.password === req.body.confirmPassword, `Les mots de passes ne correspondent pas`);
+            
+            //  -> Password respects the security rules (Schema)
+            assert.ok(schema.validate(req.body.password), `Le mot de passe ne remplit pas les critères de sécurité`);
+
+            // Password Hash (We use bcrypt module to hash password, )
+            const encryptedPwd = await bcrypt.hash(req.body.password, 10);  
+
+            // If all conditions are OK, create user in Database
+            const createUser = await User.create({
+            ...req.body,   
+                password: encryptedPwd  
+                });
+
+            // After Create user return a message successfull
+            return res.status(201).json({status : `Inscription réussie !`});
+
+        } catch (err) {
+            console.error(err);
+            return res.status(401).json({error : `${err.message}`});
+        }
     },
+
 
     /** 
      * Validate form authentication ####### TODO #######
@@ -51,19 +117,21 @@ module.exports = {
                 { firstName: foundUser.firstname, lastName: foundUser.lastname },
                     process.env.ACCESS_TOKEN_SECRET,
                 {
-                  algorithm: process.env.ACCESS_TOKEN_ALGORITHM,
-                  expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN, // 
-                  subject: foundUser.id.toString()
+                    algorithm: process.env.ACCESS_TOKEN_ALGORITHM,
+                    expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN, // 
+                    subject: foundUser.id.toString()
                 }
-              );
+                );
+            
+                const user= foundUser.firstname;
 
              /* 6. On envoie au client le JWT  */
-            return res.json({ accessToken });
+            return res.json({ accessToken, user });
 
             /* Si probleme connexion avec la BDD */
             } catch (error) {
-                 res.status(500).json({error: "Internal Server Error (Login)"});
-                 console.error(error);
+                res.status(500).json({error: "Internal Server Error (Login)"});
+                console.error(error);
             }
     },
 
