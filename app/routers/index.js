@@ -3,7 +3,7 @@ const auth = require("./../middleware/authMiddleware");
 
 const router = express.Router();
 
-// TODO : require les contrôleurs
+/* Controllers */ 
 const tagController = require('../controllers/tagController');
 const postController = require('../controllers/postController');
 const authController = require('../controllers/authController');
@@ -12,26 +12,26 @@ const userController = require('../controllers/userController');
 const expressJSDocSwagger = require("express-jsdoc-swagger");
 
 const options = {
-    info: {
-        version: "1.0.0",
-        title: "API Linkodev",
-        description: "REST API - Interface for Linkodev",
-        license: {
-            name: "MIT",
-        },
-    },
-    security: {
-        BearerAuth: {
-          type: "http",
-          scheme: "bearer",
-          bearerFormat: 'JWT',
-        }
-        
-    },
-    swaggerUIPath: "/api-doc", // url où se trouve la doc
-    baseDir: __dirname,
-    // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
-    filesPattern: "./*.js",
+  info: {
+      version: "1.0.0",
+      title: "API Linkodev",
+      description: "REST API - Interface for Linkodev",
+      license: {
+          name: "MIT",
+      },
+  },
+  security: {
+      BearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: 'JWT',
+      }
+      
+  },
+  swaggerUIPath: "/api-doc", // url où se trouve la doc
+  baseDir: __dirname,
+  // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
+  filesPattern: "./*.js",
 };
 
 expressJSDocSwagger(router)(options);
@@ -123,6 +123,15 @@ expressJSDocSwagger(router)(options);
  * @property {string} confirmPassword - Password of the user
  */
 
+/**
+ * Schema of a body to add post
+ * @typedef {object} BodyNewPost
+ * @property {number} postId - id of the post to add
+ * @property {number} introductionId - id of the introduction
+ * @property {number} bodyId - id of the body
+ * @property {number} conclusionId - id of the conclusion
+ */
+
 
 /** ******* */
 /*  ROUTES */
@@ -151,15 +160,6 @@ router.post('/register', authController.doRegister);
 router.post('/login', authController.doLogin);
 
 
-/**
- * GET /logout
- * @summary Logout a user ####### TODO #######
- * @tags Authentication / Register
- * @return  200 - success response - application/json 
- */
-router.get('/logout', authController.doLogout);
-
-
 /** **** */
 /*  USER */
 /** **** */
@@ -169,7 +169,7 @@ router.use('/me*',auth);
 
  /**
   * GET /me
-  * @summary Get details of the user connected ####### TODO #######
+  * @summary Get details of the user connected
   * @tags User
   * @security BearerAuth
   * @return {User} 200 - success response - application/json 
@@ -187,7 +187,7 @@ router.patch('/me', userController.updateUser);
 
  /**
   * DELETE /me
-  * @summary Delete the user connected ####### TODO #######
+  * @summary Delete the user connected
   * @tags User
   * @security BearerAuth
   * @return {User} 200 - success response - application/json 
@@ -196,25 +196,26 @@ router.delete('/me', userController.deleteUser);
 
 /**
   * GET /me/posts
-  * @summary Get all posts of the user connected ####### TODO #######
+  * @summary Get all posts of the user connected
   * @tags User
   * @security BearerAuth
   * @return {array<Post>} 200 - success response - application/json 
   */
-router.get('/me/posts', userController.getAllPosts);
+router.get('/me/posts', userController.getAlluserPosts);
 
  /**
   * POST /me/posts
-  * @summary Add post to the favorites of the user connected ####### TODO #######
+  * @summary Add post to the favorites of the user connected
   * @tags User
   * @security BearerAuth
-  * @return {User} 200 - success response - application/json 
+  * @param {BodyNewPost} request.body - Body of the post request to add a new post to an user
+  * @return {BodyNewPost} 200 - success response - application/json 
   */
 router.post('/me/posts', userController.addPost);
 
  /**
   * DELETE /me/posts/{postId}
-  * @summary Delete one post of favorites ####### TODO #######
+  * @summary Delete one post of favorites
   * @tags User
   * @param {number} postId.path - Id of the post
   * @security BearerAuth

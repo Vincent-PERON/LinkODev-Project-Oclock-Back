@@ -111,7 +111,6 @@ module.exports = {
             }
             
             /* 4.1 Si le mot de passe correspond, on passe à la suite ....
-
             /* 5. On créer le token JWT */
             const accessToken = jwt.sign(
                 { firstName: foundUser.firstname, lastName: foundUser.lastname },
@@ -134,13 +133,4 @@ module.exports = {
                 console.error(error);
             }
     },
-
-    /**
-     * Logout a user ####### TODO #######
-     * @param {*} req HTTP request to Express app
-     * @param {*} res HTTP response from Express app
-    */
-    async doLogout(req,res){
-        res.json("doLogout");
-    }
 }
