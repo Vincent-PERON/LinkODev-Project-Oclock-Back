@@ -21,10 +21,12 @@ const options = {
         },
     },
     security: {
-        BasicAuth: {
-            type: "http",
-            scheme: "basic",
-        },
+        BearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: 'JWT',
+        }
+        
     },
     swaggerUIPath: "/api-doc", // url où se trouve la doc
     baseDir: __dirname,
@@ -169,7 +171,7 @@ router.use('/me*',auth);
   * GET /me
   * @summary Get details of the user connected ####### TODO #######
   * @tags User
-  * @param {string} apitoken.header - JWT Token
+  * @security BearerAuth
   * @return {User} 200 - success response - application/json 
   */
 router.get('/me', userController.getUser);
@@ -178,7 +180,7 @@ router.get('/me', userController.getUser);
   * PATCH /me
   * @summary Update details of the user connected ####### TODO #######
   * @tags User
-  * @param {string} apitoken.header - JWT Token
+  * @security BearerAuth
   * @return {User} 200 - success response - application/json 
   */
 router.patch('/me', userController.updateUser);
@@ -187,7 +189,7 @@ router.patch('/me', userController.updateUser);
   * DELETE /me
   * @summary Delete the user connected ####### TODO #######
   * @tags User
-  * @param {string} apitoken.header - JWT Token
+  * @security BearerAuth
   * @return {User} 200 - success response - application/json 
   */
 router.delete('/me', userController.deleteUser);
@@ -196,7 +198,7 @@ router.delete('/me', userController.deleteUser);
   * GET /me/posts
   * @summary Get all posts of the user connected ####### TODO #######
   * @tags User
-  * @param {string} apitoken.header - JWT Token
+  * @security BearerAuth
   * @return {array<Post>} 200 - success response - application/json 
   */
 router.get('/me/posts', userController.getAllPosts);
@@ -205,7 +207,7 @@ router.get('/me/posts', userController.getAllPosts);
   * POST /me/posts
   * @summary Add post to the favorites of the user connected ####### TODO #######
   * @tags User
-  * @param {string} apitoken.header - JWT Token
+  * @security BearerAuth
   * @return {User} 200 - success response - application/json 
   */
 router.post('/me/posts', userController.addPost);
@@ -215,7 +217,7 @@ router.post('/me/posts', userController.addPost);
   * @summary Delete one post of favorites ####### TODO #######
   * @tags User
   * @param {number} postId.path - Id of the post
-  * @param {string} apitoken.header - JWT Token
+  * @security BearerAuth
   * @return {Post} 200 - success response - application/json 
   */
 router.delete('/me/posts/:postId', userController.deletePost);
