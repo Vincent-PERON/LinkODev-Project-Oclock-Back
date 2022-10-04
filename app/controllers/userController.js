@@ -138,21 +138,38 @@ module.exports = {
     */
     async addPost(req,res){
         try{
-            console.log(req.body.postId);
+            console.log(req.body);
             // Get user
             const userId = parseInt(req.user.sub);
             const user = await User.findByPk(userId);
             if (!user) return res.status(404).json("Utilisateur introuvable");
 
-            // Get post
-            const postToAdd = await Post.findByPk(req.body.postId);
-            if (!postToAdd) return res.status(404).json("Post introuvable");
+            // Post
+            let postToAdd, created = false, message = '' ;
+            const { postId } = req.body;
+            console.log(postId);
+            if (postId) // If we want to add a post of the BDD to a user
+            {
+                postToAdd = await Post.findByPk(req.body.postId); // We find the post in the BDD
+                if (!postToAdd) return res.status(404).json("Post introuvable");
+            } else { // Add a post generated to a user
+                const { introductionId, bodyId, conclusionId } = req.body;
+                [postToAdd, created] = await Post.findOrCreate({ // We find or create a post from its introduction, body and conclusion id
+                where: { 
+                    introduction_id : introductionId,
+                    body_id : bodyId,
+                    conclusion_id : conclusionId
+                    },
+                });
+                // If we create the post, add a message
+                if (created) message += `Création du post ${postToAdd.id} [i:${postToAdd.introduction_id},b:${postToAdd.body_id},c:${postToAdd.conclusion_id}].`;
+            }    
 
             // Add the association between the post and the user
             const addResult = await user.addPost(postToAdd);
 
-            if (addResult) res.status(201).json(`Ajout du post ${req.body.postId}`); 
-            else res.json("L'utilisateur a déjà enregistré ce post. Ajout impossible");
+            if (addResult) res.status(201).json(`${message} Ajout du post ${postToAdd.id} en favoris`); 
+            else res.json(`L'utilisateur a déjà enregistré le post ${postToAdd.id}. Ajout impossible`);
         } catch (error) {
             res.json(error);
         }

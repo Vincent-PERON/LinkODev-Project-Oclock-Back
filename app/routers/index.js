@@ -125,6 +125,9 @@ expressJSDocSwagger(router)(options);
  * Schema of a body to add post
  * @typedef {object} BodyNewPost
  * @property {number} postId - id of the post to add
+ * @property {number} introductionId - id of the introduction
+ * @property {number} bodyId - id of the body
+ * @property {number} conclusionId - id of the conclusion
  */
 
 
