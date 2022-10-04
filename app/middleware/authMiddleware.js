@@ -1,14 +1,31 @@
 const jwt = require("jsonwebtoken");
 
 const verifyToken = (req, res, next) => {
-  /* 1 Test if token is present in body, query, header */
-  const token = req.headers["apitoken"];
-  console.log(req.headers);
-  if (!token) {
-    return res.status(403).send("A token is required for authentication");
-  }
-  try {
+
+  try{
+    const { headers } = req;
+    console.log(headers);
+    /* 1. We test if there is an Authorization header in the HTTP request */
+    if (!headers?.authorization) { // it's like if if (!headers || !headers.authorization)
+      return res.status(401).json({
+        message: 'Missing Authorization header'
+      });
+    }
+
+    /* 2. We test if there is a token in the Authorization token */
+    const [type, token] = headers.authorization.split(' ');
+    console.log(type,token);
+  
+    if (type?.toLowerCase() !== (process.env.ACCESS_TOKEN_TYPE)?.toLowerCase() || !token) {
+      return res.status(401).json({
+        message: 'Header format is Authorization: Bearer token'
+      });
+    }
+
+    /* 3.  Test and decode token */ 
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+    /*4. Transfer token to next middleware */ 
     req.user = decoded;
   } catch (err) {
     return res.status(401).send("Invalid Token");

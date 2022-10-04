@@ -16,20 +16,19 @@ User.init({
     password: { 
         type: Sequelize.STRING,
         allowNull: false,
-        allowNull: false
     },
 
-    firstname:  { 
+    firstname: { 
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
     },
 
     lastname:  { 
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
     },
     
-    fullname : {
+    fullName : {
         type: Sequelize.VIRTUAL,
         get() {
             return `${this.firstname} ${this.lastname}`;

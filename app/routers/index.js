@@ -12,24 +12,26 @@ const userController = require('../controllers/userController');
 const expressJSDocSwagger = require("express-jsdoc-swagger");
 
 const options = {
-    info: {
-        version: "1.0.0",
-        title: "API Linkodev",
-        description: "REST API - Interface for Linkodev",
-        license: {
-            name: "MIT",
-        },
-    },
-    security: {
-        BasicAuth: {
-            type: "http",
-            scheme: "basic",
-        },
-    },
-    swaggerUIPath: "/api-doc", // url où se trouve la doc
-    baseDir: __dirname,
-    // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
-    filesPattern: "./*.js",
+  info: {
+      version: "1.0.0",
+      title: "API Linkodev",
+      description: "REST API - Interface for Linkodev",
+      license: {
+          name: "MIT",
+      },
+  },
+  security: {
+      BearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: 'JWT',
+      }
+      
+  },
+  swaggerUIPath: "/api-doc", // url où se trouve la doc
+  baseDir: __dirname,
+  // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
+  filesPattern: "./*.js",
 };
 
 expressJSDocSwagger(router)(options);
@@ -158,15 +160,6 @@ router.post('/register', authController.doRegister);
 router.post('/login', authController.doLogin);
 
 
-/**
- * GET /logout
- * @summary Logout a user ####### TODO #######
- * @tags Authentication / Register
- * @return  200 - success response - application/json 
- */
-router.get('/logout', authController.doLogout);
-
-
 /** **** */
 /*  USER */
 /** **** */
@@ -176,9 +169,9 @@ router.use('/me*',auth);
 
  /**
   * GET /me
-  * @summary Get details of the user connected 
+  * @summary Get details of the user connected
   * @tags User
-  * @param {string} apitoken.header - JWT Token
+  * @security BearerAuth
   * @return {User} 200 - success response - application/json 
   */
 router.get('/me', userController.getUser);
@@ -187,45 +180,45 @@ router.get('/me', userController.getUser);
   * PATCH /me
   * @summary Update details of the user connected ####### TODO #######
   * @tags User
-  * @param {string} apitoken.header - JWT Token
+  * @security BearerAuth
   * @return {User} 200 - success response - application/json 
   */
 router.patch('/me', userController.updateUser);
 
  /**
   * DELETE /me
-  * @summary Delete the user connected 
+  * @summary Delete the user connected
   * @tags User
-  * @param {string} apitoken.header - JWT Token
+  * @security BearerAuth
   * @return {User} 200 - success response - application/json 
   */
 router.delete('/me', userController.deleteUser);
 
 /**
   * GET /me/posts
-  * @summary Get all posts of the user connected 
+  * @summary Get all posts of the user connected
   * @tags User
-  * @param {string} apitoken.header - JWT Token
+  * @security BearerAuth
   * @return {array<Post>} 200 - success response - application/json 
   */
 router.get('/me/posts', userController.getAlluserPosts);
 
  /**
   * POST /me/posts
-  * @summary Add post to the favorites of the user connected ####### TODO #######
+  * @summary Add post to the favorites of the user connected
   * @tags User
-  * @param {string} apitoken.header - JWT Token
+  * @security BearerAuth
   * @param {BodyNewPost} request.body - Body of the post request to add a new post to an user
-  * @return {User} 200 - success response - application/json 
+  * @return {BodyNewPost} 200 - success response - application/json 
   */
 router.post('/me/posts', userController.addPost);
 
  /**
   * DELETE /me/posts/{postId}
-  * @summary Delete one post of favorites ####### TODO #######
+  * @summary Delete one post of favorites
   * @tags User
   * @param {number} postId.path - Id of the post
-  * @param {string} apitoken.header - JWT Token
+  * @security BearerAuth
   * @return {Post} 200 - success response - application/json 
   */
 router.delete('/me/posts/:postId', userController.deletePost);

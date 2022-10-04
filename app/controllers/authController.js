@@ -34,7 +34,7 @@ module.exports = {
         // ETAPE 1 : Verification de l'intégrité des données
 			
         try {
-        
+           
             // Check if firstname or lastname is empty
             assert.ok((req.body.firstname && req.body.lastname),'Vous devez renseigner votre nom et prénom');
 
@@ -75,7 +75,7 @@ module.exports = {
 
         } catch (err) {
             console.error(err);
-            return res.status(401).json({error : `${err.message}`});
+            return res.status(400).json({error : `${err.message}`});
         }
     },
 
@@ -88,6 +88,7 @@ module.exports = {
     async doLogin(req,res){
         try {
             /* 1. On cherche l'utilisateur en bdd via son email */
+            console.log(req.body)
             const foundUser = await User.findOne(
                 {
                     where : {
@@ -98,7 +99,7 @@ module.exports = {
 
             /* 2. Si l'utilisateur est introuvable on renvoie une ereur */
             if (!foundUser) {
-                return res.status(401).json({error: "Email or password is incorrect."});
+                return res.status(400).json({error: "Email or password is incorrect."});
             }
 
             /* 3. Si l'email est connue en BDD on compare le mdp envoyé avec le mdp en BDD */
@@ -106,11 +107,10 @@ module.exports = {
             
             /* 4. Si le mdp ne correspond pas, on revoie un message d'erreur */
             if (!validPassword) {   
-                return res.status(401).json({error: "Email or password is incorrect."});  
+                return res.status(400).json({error: "Email or password is incorrect."});  
             }
             
             /* 4.1 Si le mot de passe correspond, on passe à la suite ....
-
             /* 5. On créer le token JWT */
             const accessToken = jwt.sign(
                 { firstName: foundUser.firstname, lastName: foundUser.lastname },
@@ -120,10 +120,11 @@ module.exports = {
                     expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN, // 
                     subject: foundUser.id.toString()
                 }
-            );
-            const user = foundUser.firstname;
+                );
+            
+                const user= foundUser.firstname;
 
-            /* 6. On envoie au client le JWT  */
+             /* 6. On envoie au client le JWT  */
             return res.json({ accessToken, user });
 
             /* Si probleme connexion avec la BDD */
@@ -132,13 +133,4 @@ module.exports = {
                 console.error(error);
             }
     },
-
-    /**
-     * Logout a user ####### TODO #######
-     * @param {*} req HTTP request to Express app
-     * @param {*} res HTTP response from Express app
-    */
-    async doLogout(req,res){
-        res.json("doLogout");
-    }
 }
