@@ -170,7 +170,7 @@ module.exports = {
                 const userId = parseInt(req.user.sub);
                 const user = await User.findByPk(userId);
                 if (!user) return res.status(404).json("Utilisateur introuvable");
-   
+                
                 // Get post
                 const postToDelete = await Post.findByPk(req.params.postId);
                 if (!postToDelete) return res.status(404).json("Post introuvable");
