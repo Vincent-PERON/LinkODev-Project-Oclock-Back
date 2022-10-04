@@ -75,7 +75,7 @@ module.exports = {
 
         } catch (err) {
             console.error(err);
-            return res.status(401).json({error : `${err.message}`});
+            return res.status(400).json({error : `${err.message}`});
         }
     },
 
@@ -99,7 +99,7 @@ module.exports = {
 
             /* 2. Si l'utilisateur est introuvable on renvoie une ereur */
             if (!foundUser) {
-                return res.status(401).json({error: "Email or password is incorrect."});
+                return res.status(400).json({error: "Email or password is incorrect."});
             }
 
             /* 3. Si l'email est connue en BDD on compare le mdp envoyé avec le mdp en BDD */
@@ -107,7 +107,7 @@ module.exports = {
             
             /* 4. Si le mdp ne correspond pas, on revoie un message d'erreur */
             if (!validPassword) {   
-                return res.status(401).json({error: "Email or password is incorrect."});  
+                return res.status(400).json({error: "Email or password is incorrect."});  
             }
             
             /* 4.1 Si le mot de passe correspond, on passe à la suite ....
