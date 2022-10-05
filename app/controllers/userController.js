@@ -5,6 +5,8 @@ const assert = require('assert');
 const validator = require('email-validator');
 const passwordValidator = require('password-validator');
 
+const bcrypt = require('bcrypt');
+
 // Create a password schema
 const schema = new passwordValidator();
 
@@ -27,7 +29,7 @@ module.exports = {
     async getUser(req,res){
         const foundUser = await User.findOne(
             {   
-                attributes: ['email'],
+                attributes: ['firstname','lastname','email'],
                 where : {
                     id: req.user.sub
                 }
@@ -42,40 +44,88 @@ module.exports = {
      * @param {*} res HTTP response from Express app
     */
     async updateUser(req,res){
+        let messageSuccess = '';
         try {
             // Get user
             const userId = parseInt(req.user.sub);
             const user = await User.findByPk(userId);
             if (!user) return res.status(404).json("Utilisateur introuvable");
-
-            // Get attributes to update for the user
-            const {email,password, newPassword, confirmPassword} = req.body;
-
             
-            if (email) { // If email in the body
-                //  -> Test if email is valide (module "email-avlidator")
-                assert.ok(validator.validate(email), `${email} n'est pas un email valide.`); 
-                user.email = email; // Update the email
+            // Get attributes to update the user
+            const {email, password, update} = req.body;
+
+            // Email and password required
+            assert.ok(email && password , 'Vous devez renseigner votre email et votre mot de passe actuels');
+
+            // Check if user password is correct (old password)
+            const validPassword = await bcrypt.compare(password,user.password); 
+
+            // Test if the couple (email and password) of the user are valids. 
+            assert.ok(user.email === email &&  validPassword, 'Ancien mot de passe et/ou email invalide');
+
+            // New email ?
+            if (update?.email) {
+                // Check if new email is new
+                assert.ok(email !== update.email, `Votre nouvel email est identique à votre ancien email.`);
+
+                // Check if new email is valid
+                assert.ok(validator.validate(update.email), `${update.email} n'est pas un email valide.`); 
+
+                // Check if another user has this email
+                const userFound = await User.findOne({
+                    attributes: ['email'],
+                    where : {
+                        email: update.email
+                    }
+                });
+                
+                assert.ok(!userFound, `${update.email} est déjà utilisé`); 
+
+                // If all is ok, change the email of the user
+                user.email = update.email; // Update the email
+                await user.save();
+                messageSuccess += `Nouvel email : ${user.email}.`
             }
 
-            /*
+            // New password ? 
+            if (update?.password) {
+                // Check if the confirm password is the same
+                assert.ok(update.password === update.confirmPassword, `Le nouveau mot de passe et sa confirmation ne sont pas identiques.`); 
 
-            //  -> The 2 passwords (pwd + confim) are the same
-            assert.ok(req.body.password === req.body.confirmPassword, `Les mots de passes ne correspondent pas`);
-            
-            //  -> Password respects the security rules (Schema)
-            assert.ok(schema.validate(req.body.password), `Le mot de passe ne remplit pas les critères de sécurité`);
+                // Check if the user change his password
+                assert.ok(update.password !== password, `Le nouveau mot de passe doit être différent de l'ancien.`); 
 
-            // Password Hash (We use bcrypt module to hash password, )
-            const encryptedPwd = await bcrypt.hash(req.body.password, 10);  
-            
-            */
-            res.json("updateUser");
-            
+                // Check is the format of the password is OK
+                assert.ok(schema.validate(update.password), `Le mot de passe ne remplit pas les critères de sécurité.`);
+
+                // Hash the password
+                const encryptedPwd = await bcrypt.hash(update.password, 10);
+
+                // If all is ok, change the password of the user
+                user.password = encryptedPwd; // Update the password
+                await user.save();
+                messageSuccess += `Nouveau mot de passe.`;
+            }
+
+            // New firstname ? 
+            if (update?.firstname) {
+                user.firstname = update.firstname; // Update the firstname
+                await user.save();
+                messageSuccess += `Nouveau prénom : ${user.firstname}.`;
+            }
+
+            // New lastname ?
+            if (update.lastname) {
+                user.lastname = update.lastname; // Update the lastname
+                await user.save();
+                messageSuccess += `Nouveau nom : ${user.lastname}. `
+            }
+
+            res.json(messageSuccess);    
 
 
         } catch (error) {
-            res.status(500).json(error);
+            res.json(`${messageSuccess} -> Erreur : ${error.message}`);
         }
         
     },
