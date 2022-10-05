@@ -10,6 +10,7 @@ const authController = require('../controllers/authController');
 const userController = require('../controllers/userController');
 
 const expressJSDocSwagger = require("express-jsdoc-swagger");
+// doc : https://brikev.github.io/express-jsdoc-swagger-docs/#/
 
 const options = {
   info: {
@@ -132,6 +133,15 @@ expressJSDocSwagger(router)(options);
  * @property {number} conclusionId - id of the conclusion
  */
 
+/**
+ * Schema of a body to update user
+ * newEmail, newPassword, confirmPassword, newFirstname, newLastname
+ * @typedef {object} BodyUpdateUser
+ * @property {string} email.required - email of the user
+ * @property {string} password.required - password of the user
+ * @property {UserForm} update - Fields to update for the user
+ * 
+ */
 
 /** ******* */
 /*  ROUTES */
@@ -145,7 +155,7 @@ expressJSDocSwagger(router)(options);
 * POST /register
 * @summary Validate form register 
 * @tags Authentication / Register
- * @param {UserForm} request.body - email of the user
+* @param {UserForm} request.body - email of the user
 * @return  200 - success response - application/json 
 */
 router.post('/register', authController.doRegister);
@@ -178,10 +188,48 @@ router.get('/me', userController.getUser);
 
 /**
   * PATCH /me
-  * @summary Update details of the user connected ####### TODO #######
+  * @summary Update details of the user connected
   * @tags User
   * @security BearerAuth
-  * @return {User} 200 - success response - application/json 
+  * @param {BodyUpdateUser} request.body - Body request
+  * @return {string} 200 - success response - application/json 
+  * @example request - All
+  * {
+  *   "email" : "example1@domain.com",
+  *   "password" : "Example1234",
+  *   "update": {
+  *     "firstname" : "Prénom",
+  *     "lastname" : "Nom",
+  *     "email" : "example2@domain.com",
+  *     "password": "Example12345",
+  *     "confirmPassword": "Example12345"
+  *   }
+  * }
+  * @example request - New email
+  * {
+  *   "email" : "example1@domain.com",
+  *   "password" : "Example1234",
+  *   "update": {"email": "example2@domain.com"}
+  * }
+  * @example request - New password
+  * {
+  *   "email" : "example1@domain.com",
+  *   "password" : "Example1234",
+  *   "update": {
+  *     "password": "Example12345",
+  *     "confirmPassword": "Example12345"
+  *   }
+  * }
+  * @example request - New name
+  * {
+  *   "email" : "example1@domain.com",
+  *   "password" : "Example1234",
+  *   "update": {
+  *     "firstname" : "Prénom",
+  *     "lastname" : "Nom"
+  *   }
+  * }
+
   */
 router.patch('/me', userController.updateUser);
 
