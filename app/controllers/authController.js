@@ -1,8 +1,5 @@
 const { User } = require("../models");
 
-/* JWT Token */
-const jwt = require('jsonwebtoken');
-
 /* Password and email Validator Module */
 const assert = require('assert');
 const validator = require('email-validator');
@@ -37,21 +34,21 @@ module.exports = {
             assert.ok((req.body.firstname && req.body.lastname),'Vous devez renseigner votre nom et prénom');
 
             //  -> L'email est libre
-            const user = await User.findOne({
-                where: {
-                    email: req.body.email
-                }
-            });
+            // const user = await User.findOne({
+            //     where: {
+            //         email: req.body.email
+            //     }
+            // });
 
             /* Asserts
             ** We use "Assert" a Node's module wich say "If condition is false, I show an error)"
             */
 
             /*  -> Check if user is in Database */
-            assert.ok(!Boolean(user),`L'utilisateur ${req.body.email} existe déjà`);  
+            // assert.ok(!Boolean(user),`L'utilisateur ${req.body.email} existe déjà`);  
 
             //  -> Email is valide (module "email-avlidator")
-            assert.ok(validator.validate(req.body.email), `${req.body.email} n'est pas un email valide.`);  
+            // assert.ok(validator.validate(req.body.email), `${req.body.email} n'est pas un email valide.`);  
 
             //  -> The 2 passwords (pwd + confim) are the same
             assert.ok(req.body.password === req.body.confirmPassword, `Les mots de passes ne correspondent pas`);
@@ -107,22 +104,10 @@ module.exports = {
             
             /* 4.1 Si le mot de passe correspond, on passe à la suite ....
             /* 5. On créer le token JWT */
-            // const accessToken = jwt.sign(
-            //     { firstName: foundUser.firstname, lastName: foundUser.lastname },
-            //         process.env.ACCESS_TOKEN_SECRET,
-            //     {
-            //         algorithm: process.env.ACCESS_TOKEN_ALGORITHM,
-            //         expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN, // 
-            //         subject: foundUser.id.toString()
-            //     }
-            //     );
-            // console.log(foundUser);
-            // console.log(foundUser.getJWT());
-
             const accessToken = foundUser.getJWT();
             const user= foundUser.firstname;
 
-             /* 6. On envoie au client le JWT  */
+             /* 6. On envoie au client le JWT et le prénom de l'utilisateur  */
             res.json({ accessToken, user });
 
             /* Si probleme connexion avec la BDD */

@@ -14,7 +14,9 @@ User.init({
         unique: true,
         allowNull: false,
         validate: {
-            isEmail: true,
+            notNull: {msg: "Email nécessaire"},
+            isEmail: {msg: "Format email invalide"}
+
         }
     },
     
