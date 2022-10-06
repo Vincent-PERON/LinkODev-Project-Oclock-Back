@@ -107,16 +107,19 @@ module.exports = {
             
             /* 4.1 Si le mot de passe correspond, on passe à la suite ....
             /* 5. On créer le token JWT */
-            const accessToken = jwt.sign(
-                { firstName: foundUser.firstname, lastName: foundUser.lastname },
-                    process.env.ACCESS_TOKEN_SECRET,
-                {
-                    algorithm: process.env.ACCESS_TOKEN_ALGORITHM,
-                    expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN, // 
-                    subject: foundUser.id.toString()
-                }
-                );
-            
+            // const accessToken = jwt.sign(
+            //     { firstName: foundUser.firstname, lastName: foundUser.lastname },
+            //         process.env.ACCESS_TOKEN_SECRET,
+            //     {
+            //         algorithm: process.env.ACCESS_TOKEN_ALGORITHM,
+            //         expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN, // 
+            //         subject: foundUser.id.toString()
+            //     }
+            //     );
+            // console.log(foundUser);
+            // console.log(foundUser.getJWT());
+
+            const accessToken = foundUser.getJWT();
             const user= foundUser.firstname;
 
              /* 6. On envoie au client le JWT  */
