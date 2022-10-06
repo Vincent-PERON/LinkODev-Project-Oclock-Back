@@ -1,11 +1,11 @@
-// const dotenv = require('dotenv');
-const bcrypt = require('bcrypt');
+
 const { User } = require("../models");
 
 /* JWT Token */
 const jwt = require('jsonwebtoken');
 
 /* Password and email Validator Module */
+const bcrypt = require('bcrypt');
 const assert = require('assert');
 const validator = require('email-validator');
 const passwordValidator = require('password-validator');
@@ -26,7 +26,7 @@ schema
 
 module.exports = { 
     /**
-     * Validate form register ####### TODO #######
+     * Validate form register
      * @param {*} req HTTP request to Express app
      * @param {*} res HTTP response from Express app
     */
