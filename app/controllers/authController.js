@@ -1,5 +1,3 @@
-// const dotenv = require('dotenv');
-const bcrypt = require('bcrypt');
 const { User } = require("../models");
 
 /* JWT Token */
@@ -26,7 +24,7 @@ schema
 
 module.exports = { 
     /**
-     * Validate form register ####### TODO #######
+     * Validate form register
      * @param {*} req HTTP request to Express app
      * @param {*} res HTTP response from Express app
     */
@@ -61,14 +59,9 @@ module.exports = {
             //  -> Password respects the security rules (Schema)
             assert.ok(schema.validate(req.body.password), `Le mot de passe ne remplit pas les critères de sécurité`);
 
-            // Password Hash (We use bcrypt module to hash password, )
-            const encryptedPwd = await bcrypt.hash(req.body.password, 10);  
-
             // If all conditions are OK, create user in Database
-            const createUser = await User.create({
-            ...req.body,   
-                password: encryptedPwd  
-                });
+            // note : password is hashed with bcrypt in the User model
+            const createUser = await User.create(req.body);   
 
             // After Create user return a message successfull
             return res.status(201).json({status : `Inscription réussie !`});
@@ -81,18 +74,20 @@ module.exports = {
 
 
     /** 
-     * Validate form authentication ####### TODO #######
+     * Validate form authentication
      * @param {*} req HTTP request to Express app
      * @param {*} res HTTP response from Express app
     */
     async doLogin(req,res){
         try {
-            /* 1. On cherche l'utilisateur en bdd via son email */
-            console.log(req.body)
+            // Params needed in the body of the request to login
+            const {email, password} = req.body;
+
+            // 1. Get the user in the BDD from his email
             const foundUser = await User.findOne(
                 {
                     where : {
-                        email: req.body.email
+                        email: email
                     }
                 }
             );
@@ -103,7 +98,7 @@ module.exports = {
             }
 
             /* 3. Si l'email est connue en BDD on compare le mdp envoyé avec le mdp en BDD */
-            const validPassword = await bcrypt.compare(req.body.password, foundUser.password); 
+            const validPassword = await foundUser.checkPassword(password); // checkPassword is a method of the User model 
             
             /* 4. Si le mdp ne correspond pas, on revoie un message d'erreur */
             if (!validPassword) {   
@@ -112,20 +107,23 @@ module.exports = {
             
             /* 4.1 Si le mot de passe correspond, on passe à la suite ....
             /* 5. On créer le token JWT */
-            const accessToken = jwt.sign(
-                { firstName: foundUser.firstname, lastName: foundUser.lastname },
-                    process.env.ACCESS_TOKEN_SECRET,
-                {
-                    algorithm: process.env.ACCESS_TOKEN_ALGORITHM,
-                    expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN, // 
-                    subject: foundUser.id.toString()
-                }
-                );
-            
-                const user= foundUser.firstname;
+            // const accessToken = jwt.sign(
+            //     { firstName: foundUser.firstname, lastName: foundUser.lastname },
+            //         process.env.ACCESS_TOKEN_SECRET,
+            //     {
+            //         algorithm: process.env.ACCESS_TOKEN_ALGORITHM,
+            //         expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN, // 
+            //         subject: foundUser.id.toString()
+            //     }
+            //     );
+            // console.log(foundUser);
+            // console.log(foundUser.getJWT());
+
+            const accessToken = foundUser.getJWT();
+            const user= foundUser.firstname;
 
              /* 6. On envoie au client le JWT  */
-            return res.json({ accessToken, user });
+            res.json({ accessToken, user });
 
             /* Si probleme connexion avec la BDD */
             } catch (error) {

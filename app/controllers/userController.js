@@ -5,8 +5,6 @@ const assert = require('assert');
 const validator = require('email-validator');
 const passwordValidator = require('password-validator');
 
-const bcrypt = require('bcrypt');
-
 // Create a password schema
 const schema = new passwordValidator();
 
@@ -39,7 +37,7 @@ module.exports = {
     },
 
     /**
-     * Update details of one user ####### TODO #######
+     * Update details of one user
      * @param {*} req HTTP request to Express app
      * @param {*} res HTTP response from Express app
     */
@@ -58,7 +56,7 @@ module.exports = {
             assert.ok(email && password , 'Vous devez renseigner votre email et votre mot de passe actuels');
 
             // Check if user password is correct (old password)
-            const validPassword = await bcrypt.compare(password,user.password); 
+            const validPassword = await user.checkPassword(password); // checkPassword is a method of the User model 
 
             // Test if the couple (email and password) of the user are valids. 
             assert.ok(user.email === email &&  validPassword, 'Ancien mot de passe et/ou email invalide');
@@ -98,11 +96,10 @@ module.exports = {
                 // Check is the format of the password is OK
                 assert.ok(schema.validate(update.password), `Le mot de passe ne remplit pas les critères de sécurité.`);
 
-                // Hash the password
-                const encryptedPwd = await bcrypt.hash(update.password, 10);
 
                 // If all is ok, change the password of the user
-                user.password = encryptedPwd; // Update the password
+                // note : password is hashed with bcrypt in the User model
+                user.password = update.password; // Update the password
                 await user.save();
                 messageSuccess += `Nouveau mot de passe.`;
             }
@@ -182,7 +179,7 @@ module.exports = {
         res.json(userPosts);
     },
 
-    /** Add post to favorites ####### TODO #######
+    /** Add post to favorites
      * @param {*} req HTTP request to Express app
      * @param {*} res HTTP response from Express app
     */
