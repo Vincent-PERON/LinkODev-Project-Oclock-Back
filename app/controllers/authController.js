@@ -26,29 +26,31 @@ module.exports = {
      * @param {*} res HTTP response from Express app
     */
     async doRegister(req,res){
-        // ETAPE 1 : Verification de l'intégrité des données
+
+        // Params required to register a new user
+        // const {firstname, lastname, email, password, confirmPassword} = req.body
 			
         try {
-           
+            // ETAPE 1 : Verification de l'intégrité des données
             // Check if firstname or lastname is empty
             assert.ok((req.body.firstname && req.body.lastname),'Vous devez renseigner votre nom et prénom');
 
             //  -> L'email est libre
-            // const user = await User.findOne({
-            //     where: {
-            //         email: req.body.email
-            //     }
-            // });
+            const user = await User.findOne({
+                where: {
+                    email: req.body.email
+                }
+            });
 
             /* Asserts
             ** We use "Assert" a Node's module wich say "If condition is false, I show an error)"
             */
 
             /*  -> Check if user is in Database */
-            // assert.ok(!Boolean(user),`L'utilisateur ${req.body.email} existe déjà`);  
+            assert.ok(!Boolean(user),`L'utilisateur ${req.body.email} existe déjà`);  
 
             //  -> Email is valide (module "email-avlidator")
-            // assert.ok(validator.validate(req.body.email), `${req.body.email} n'est pas un email valide.`);  
+            assert.ok(validator.validate(req.body.email), `${req.body.email} n'est pas un email valide.`);  
 
             //  -> The 2 passwords (pwd + confim) are the same
             assert.ok(req.body.password === req.body.confirmPassword, `Les mots de passes ne correspondent pas`);

@@ -118,13 +118,22 @@ module.exports = {
                 messageSuccess += `Nouveau nom : ${user.lastname}. `
             }
 
-            res.json(messageSuccess);    
+            res.json({
+                msg : messageSuccess,
+                user: {
+                    firstname: user.firstname,
+                    lastname: user.lastname,
+                    email: user.email
+                }
+            });    
 
 
         } catch (error) {
-            res.json(`${messageSuccess} -> Erreur : ${error.message}`);
-        }
-        
+            res.json({
+                msg : messageSuccess,
+                error : error.message
+            });
+        }  
     },
 
     /**
