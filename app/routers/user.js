@@ -22,7 +22,7 @@ router.use('/me*',auth);
 router.get('/me', userController.getUser);
 
 /**
-  * PATCH /me
+  * PUT /me
   * @summary Update details of the user connected
   * @tags User
   * @security BearerAuth
@@ -66,7 +66,7 @@ router.get('/me', userController.getUser);
   * }
   * 
   */
-router.patch('/me', userController.updateUser);
+router.put('/me', userController.updateUser);
 
  /**
   * DELETE /me
