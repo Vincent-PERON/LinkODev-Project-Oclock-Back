@@ -1,8 +1,5 @@
 const { User } = require("../models");
 
-/* JWT Token */
-const jwt = require('jsonwebtoken');
-
 /* Password and email Validator Module */
 const assert = require('assert');
 const validator = require('email-validator');
@@ -29,10 +26,12 @@ module.exports = {
      * @param {*} res HTTP response from Express app
     */
     async doRegister(req,res){
-        // ETAPE 1 : Verification de l'intégrité des données
+
+        // Params required to register a new user
+        // const {firstname, lastname, email, password, confirmPassword} = req.body
 			
         try {
-           
+            // ETAPE 1 : Verification de l'intégrité des données
             // Check if firstname or lastname is empty
             assert.ok((req.body.firstname && req.body.lastname),'Vous devez renseigner votre nom et prénom');
 
@@ -107,22 +106,10 @@ module.exports = {
             
             /* 4.1 Si le mot de passe correspond, on passe à la suite ....
             /* 5. On créer le token JWT */
-            // const accessToken = jwt.sign(
-            //     { firstName: foundUser.firstname, lastName: foundUser.lastname },
-            //         process.env.ACCESS_TOKEN_SECRET,
-            //     {
-            //         algorithm: process.env.ACCESS_TOKEN_ALGORITHM,
-            //         expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN, // 
-            //         subject: foundUser.id.toString()
-            //     }
-            //     );
-            // console.log(foundUser);
-            // console.log(foundUser.getJWT());
-
             const accessToken = foundUser.getJWT();
             const user= foundUser.firstname;
 
-             /* 6. On envoie au client le JWT  */
+             /* 6. On envoie au client le JWT et le prénom de l'utilisateur  */
             res.json({ accessToken, user });
 
             /* Si probleme connexion avec la BDD */
