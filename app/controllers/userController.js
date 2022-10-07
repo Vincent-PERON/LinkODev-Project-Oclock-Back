@@ -44,15 +44,18 @@ module.exports = {
     async updateUser(req,res){
         let messageSuccess = '';
         try {
+            
             // Get user
             const userId = parseInt(req.user.sub);
             const user = await User.findByPk(userId);
             if (!user) return res.status(404).json("Utilisateur introuvable");
             
-            // Get attributes to update the user
+            user.update(req.body.update);
+            /*
+            // Get attributes of the body of the HTTP request to update the user
             const {email, password, update} = req.body;
 
-            // Email and password required
+            // Old email and password required to update user details
             assert.ok(email && password , 'Vous devez renseigner votre email et votre mot de passe actuels');
 
             // Check if user password is correct (old password)
@@ -117,6 +120,8 @@ module.exports = {
                 await user.save();
                 messageSuccess += `Nouveau nom : ${user.lastname}. `
             }
+            */
+
 
             res.json({
                 msg : messageSuccess,
