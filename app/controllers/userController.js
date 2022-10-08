@@ -47,10 +47,11 @@ module.exports = {
             
             // Get user
             const userId = parseInt(req.user.sub);
-            const user = await User.findByPk(userId);
+            let user = await User.findByPk(userId);
             if (!user) return res.status(404).json("Utilisateur introuvable");
             
-            user.update(req.body.update);
+            const result = await user.update(req.body.update);
+            console.log(result);
             /*
             // Get attributes of the body of the HTTP request to update the user
             const {email, password, update} = req.body;
