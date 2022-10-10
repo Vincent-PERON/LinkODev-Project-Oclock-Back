@@ -6,6 +6,7 @@ const router = new Router();
 
 /* Middleware to validate the body of requests */ 
 const {validateBody} = require('../middleware/validation/validation.js');
+// Schemas definition
 const schemas = require("../middleware/validation/schemas");
 
 
