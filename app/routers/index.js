@@ -18,6 +18,14 @@ options.baseDir = __dirname;
 
 expressJSDocSwagger(router)(options);
 
+
+// const serverApp = () => new Promise(resolve => {
+//     instance.on('finish', data => {
+//       init(data);
+//       resolve(router);
+//     });
+
+
 /** ******* */
 /*  ROUTERS */
 /** ****** */
@@ -26,6 +34,5 @@ router.use(userRouter);
 router.use(authRouter);
 router.use(postRouter);
 router.use(tagRouter);
- 
 
 module.exports = router; 

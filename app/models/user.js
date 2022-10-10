@@ -11,33 +11,53 @@ class User extends Sequelize.Model {};
 User.init({
     email: {
         type: Sequelize.STRING,
-        unique: true,
         allowNull: false,
         validate: {
             notNull: {msg: "Email nécessaire"},
-            isEmail: {msg: "Format email invalide"}
-
-        }
+            notEmpty: {msg: "Email nécessaire"},
+            isEmail: {msg: "Format email invalide"},
+        },
+        unique: {msg: `Email déjà utilisé`},
     },
     
     password: { 
         type: Sequelize.STRING,
         allowNull: false,
+        validate: {
+            isStrongPassword: {
+                args: [{
+                    minLength: 8,
+                    minLowercase: 1,
+                    minUppercase: 1,
+                    minNumbers: 2,
+                    minSymbols: 0,
+                  }],
+                msg: `Le mot de passe ne remplit pas les critères de sécurité (minimum 8 caractères, 1 majuscule, 1 minuscule, 2 chiffres).`    
+           }
+        },
         // Storing passwords in plaintext in the database is terrible.
         // Hashing the value with an appropriate cryptographic hash function is better.
-        set (value) {
-            this.setDataValue('password', bcrypt.hashSync(value,10));
-        }
+        // set (value) {
+        //     this.setDataValue('password', bcrypt.hashSync(value,10));
+        // }
     },
 
     firstname: { 
         type: Sequelize.STRING,
         allowNull: false,
+        validate: {
+            notNull: {msg: "Prénom nécessaire"},
+            notEmpty: {msg: "Prénom nécessaire"},
+        },
     },
 
     lastname:  { 
         type: Sequelize.STRING,
         allowNull: false,
+        validate: {
+            notNull: {msg: "Nom nécessaire"},
+            notEmpty: {msg: "Nom nécessaire"},
+        },
     },
     
     fullName : {
@@ -54,6 +74,17 @@ User.init({
     sequelize,
     tableName: "user"
 });
+
+/** 
+ * Storing passwords in plaintext in the database is terrible
+ * Hashing the value with an appropriate cryptographic hash function is better.
+ * Hash the password after validation of the format of the user
+ * https://sequelize.org/docs/v6/other-topics/hooks/#declaring-hooks
+ */
+User.afterValidate(async (user) => {
+    const hashedPassword = await bcrypt.hash(user.password,10);
+    user.password = hashedPassword;
+})
 
 /**
  * Function to check if the password in parameter matches the password of the User model instance
@@ -79,5 +110,6 @@ User.prototype.getJWT = function() {
         }
     );
 };
+
 
 module.exports = User;

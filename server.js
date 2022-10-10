@@ -5,6 +5,7 @@ require('dotenv').config();
 // CORS Library
 const cors = require('cors');
 
+
 // Sessions
 const session = require('express-session'); 
 
@@ -16,6 +17,8 @@ const PORT = process.env.PORT || 5000
 
 // Init express server
 const app = express();
+
+
 
 // CORS
 // const corsOptions = {
@@ -44,14 +47,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(router);
-		
-// ******************* AUTH **************************** //
-// router.get('/signup', userController.showSignUp);   
-// router.post('/signup', userController.doSignUp);	// traiter le formulaire d'inscription,	
-// router.get('/login', userController.showLogin);   // d'afficher le formulaire de connexion
-// router.post('/login', userController.doLogin);   // se connecter 
-
-
 
 // on met le serveur en mode écoute pour entre les requêtes HTTP arriver
 app.listen(PORT, () => {

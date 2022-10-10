@@ -51,7 +51,7 @@ module.exports = {
             if (!user) return res.status(404).json("Utilisateur introuvable");
             
             const result = await user.update(req.body.update);
-            console.log(result);
+
             /*
             // Get attributes of the body of the HTTP request to update the user
             const {email, password, update} = req.body;

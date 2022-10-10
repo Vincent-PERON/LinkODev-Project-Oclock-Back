@@ -2,7 +2,9 @@ const { User } = require("../models");
 
 /* Password and email Validator Module */
 const assert = require('assert');
-const validator = require('email-validator');
+// const validator = require('email-validator');
+
+/* Now, password schema is defined in the User model definition
 const passwordValidator = require('password-validator');
 
 // Create a password schema
@@ -17,53 +19,54 @@ schema
 			    .has().digits(2)                                // Must have at least 2 digits
 			    .has().not().spaces()                           // Should not have spaces
 			    .is().not().oneOf(['Passw0rd', 'Password123','Azerty','azerty']); // Blacklist these values
-
+*/
 
 module.exports = { 
     /**
      * Validate form register
-     * @param {*} req HTTP request to Express app
-     * @param {*} res HTTP response from Express app
+     * @param {object} req HTTP request to Express app
+     * @param {object} res HTTP response from Express app
+     * @return {object} Response with JSON 
+     * 
     */
     async doRegister(req,res){
 
-        // Params required to register a new user
-        // const {firstname, lastname, email, password, confirmPassword} = req.body
+        // Params required to register a new user : firstname, lastname, email, password, confirmPassword
+        // It's validated by the validateBody function of the middleware validation with the schema userForm.
+        const userForm = req.body;
 			
         try {
-            // ETAPE 1 : Verification de l'intégrité des données
-            // Check if firstname or lastname is empty
-            assert.ok((req.body.firstname && req.body.lastname),'Vous devez renseigner votre nom et prénom');
-
-            //  -> L'email est libre
-            const user = await User.findOne({
-                where: {
-                    email: req.body.email
-                }
-            });
-
             /* Asserts
             ** We use "Assert" a Node's module wich say "If condition is false, I show an error)"
             */
 
-            /*  -> Check if user is in Database */
-            assert.ok(!Boolean(user),`L'utilisateur ${req.body.email} existe déjà`);  
+            // Check if firstname or lastname is empty. Now, not neccesary because it's in the User model definition.
+            // assert.ok((userForm.firstname && userForm.lastname),'Vous devez renseigner votre nom et prénom');
 
-            //  -> Email is valide (module "email-avlidator")
-            assert.ok(validator.validate(req.body.email), `${req.body.email} n'est pas un email valide.`);  
+            // Email already used ? Unique constraint is defined in the User model defition but 
+            const user = await User.findOne({
+                where: {
+                    email: userForm.email
+                }
+            });
+            assert.ok(!Boolean(user),`L'utilisateur ${req.body.email} existe déjà`);            
+
+            //  -> Email is valide (module "email-avlidator"). Now, not neccesary because it's in the User model definition.
+            // assert.ok(validator.validate(userForm.email), `${userForm.email} n'est pas un email valide.`);  
 
             //  -> The 2 passwords (pwd + confim) are the same
-            assert.ok(req.body.password === req.body.confirmPassword, `Les mots de passes ne correspondent pas`);
+            assert.ok(userForm.password === userForm.confirmPassword, `Les mots de passes ne correspondent pas`);
             
-            //  -> Password respects the security rules (Schema)
-            assert.ok(schema.validate(req.body.password), `Le mot de passe ne remplit pas les critères de sécurité`);
+            //  -> Password respects the security rules (Schema). Now, not neccesary because it's in the User model definition.
+            // assert.ok(schema.validate(userForm.password), `Le mot de passe ne remplit pas les critères de sécurité`);
 
             // If all conditions are OK, create user in Database
             // note : password is hashed with bcrypt in the User model
-            const createUser = await User.create(req.body);   
+            const createUser = await User.create(userForm);
+            // console.log(createUser.errors[0].message);
 
             // After Create user return a message successfull
-            return res.status(201).json({status : `Inscription réussie !`});
+            return console.log(res.status(201).json({status : `Inscription réussie !`}));
 
         } catch (err) {
             console.error(err);
@@ -72,14 +75,17 @@ module.exports = {
     },
 
 
-    /** 
-     * Validate form authentication
-     * @param {*} req HTTP request to Express app
-     * @param {*} res HTTP response from Express app
+    /**
+     * Validate form login
+     * @param {object} req HTTP request to Express app
+     * @param {object} res HTTP response from Express app
+     * @return {object} Response with JSON 
+     * 
     */
     async doLogin(req,res){
         try {
-            // Params needed in the body of the request to login
+            // Params required in the body of the request to login
+            // It's validated by the validateBody function of the middleware validation with the schema userLogin.
             const {email, password} = req.body;
 
             // 1. Get the user in the BDD from his email
@@ -91,28 +97,27 @@ module.exports = {
                 }
             );
 
-            /* 2. Si l'utilisateur est introuvable on renvoie une ereur */
+            /* 2. Test if user exists */
             if (!foundUser) {
-                return res.status(400).json({error: "Email or password is incorrect."});
+                return res.status(400).json({error: "Email ou mot de passe incorrect."});
             }
 
-            /* 3. Si l'email est connue en BDD on compare le mdp envoyé avec le mdp en BDD */
+            /* 3. If the user exsists, check if the password is correct */
             const validPassword = await foundUser.checkPassword(password); // checkPassword is a method of the User model 
             
-            /* 4. Si le mdp ne correspond pas, on revoie un message d'erreur */
+            /* 4. Return error if the password is incorrect */
             if (!validPassword) {   
-                return res.status(400).json({error: "Email or password is incorrect."});  
+                return res.status(400).json({error: "Email ou mot de passe incorrect."});  
             }
             
-            /* 4.1 Si le mot de passe correspond, on passe à la suite ....
-            /* 5. On créer le token JWT */
+            /* 5. If user password is correct, generate JWT */
             const accessToken = foundUser.getJWT();
-            const user= foundUser.firstname;
+            const user= foundUser.firstname; // return also the firstname to display a personnal message
 
-             /* 6. On envoie au client le JWT et le prénom de l'utilisateur  */
+             /* 6. Send token and firstname  */
             res.json({ accessToken, user });
 
-            /* Si probleme connexion avec la BDD */
+            /* If error ... */
             } catch (error) {
                 res.status(500).json({error: "Internal Server Error (Login)"});
                 console.error(error);

@@ -3,6 +3,8 @@
 /*         SWAGGER           */
 /** ************************ */
 
+const { init } = require('express-oas-validator');
+
 /** ******* */
 /* SCHEMAS */
 /** ******* */
@@ -78,15 +80,7 @@
  * @property {string} password - Password of the user
  */
 
-/**
- * Schema of a userForm
- * @typedef {object} UserForm
- * @property {string} firstname - Firstname of the user
- * @property {string} lastname - Lastname of the user
- * @property {string} email - EMail of the user
- * @property {string} password - Password of the user
- * @property {string} confirmPassword - Password of the user
- */
+
 
 /**
  * Schema of a body to add post
