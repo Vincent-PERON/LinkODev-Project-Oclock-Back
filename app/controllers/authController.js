@@ -66,10 +66,9 @@ module.exports = {
             // console.log(createUser.errors[0].message);
 
             // After Create user return a message successfull
-            return console.log(res.status(201).json({status : `Inscription réussie !`}));
+            return res.status(201).json({status : `Inscription réussie !`});
 
         } catch (err) {
-            console.error(err);
             return res.status(400).json({error : `${err.message}`});
         }
     },
@@ -117,10 +116,9 @@ module.exports = {
              /* 6. Send token and firstname  */
             res.json({ accessToken, user });
 
-            /* If error ... */
-            } catch (error) {
-                res.status(500).json({error: "Internal Server Error (Login)"});
-                console.error(error);
-            }
+        /* If error ... */
+        } catch (err) {
+            return res.status(400).json({error : `${err.message}`});
+        }
     },
 }

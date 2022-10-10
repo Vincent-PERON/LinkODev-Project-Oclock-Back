@@ -36,10 +36,11 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'LinkODev-website'      // la clé "secret" est gérée dans le .env  si le secret n'est pas defini ce sera "change Me" qui sera utilisé
 }));
 
+
 /* Routes */
 // Page d'accueil du serveur
 app.get('/', (req, res) => {
-  console.log('>>  /');
+  console.log(title,'>>  /');
   res.sendFile( __dirname + '/index.html');
 });
 
@@ -47,6 +48,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(router);
+
 
 // on met le serveur en mode écoute pour entre les requêtes HTTP arriver
 app.listen(PORT, () => {

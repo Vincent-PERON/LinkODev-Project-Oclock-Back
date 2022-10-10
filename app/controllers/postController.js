@@ -8,31 +8,35 @@ module.exports = {
 
     /**
      * Get all posts
-     * @param {*} _ 
-     * @param {*} res HTTP response from Express app
+     * @param {object} _ HTTP request from Express app - NOT USED
+     * @param {object} res HTTP response from Express app
      */
     async getAllPosts(_, res) {
-        const posts = await Post.findAll({
-            include: [
-                {
-                    association: 'introduction',
-                    attributes: ['id','content']
-                },
-                {
-                    association: 'body',
-                    attributes: ['id','content']
-                },
-                {
-                    association: 'conclusion',
-                    attributes: ['id','content']
-                },
-            ],
-            attributes: ['id','updatedAt']
-        });
-        // let postsArray = [];
-        // posts.forEach(post => post.content = post.introduction.content + post.body.content + post.conclusion.content );
-        // console.log(posts);
-        res.json(posts);
+        try {
+            const posts = await Post.findAll({
+                include: [
+                    {
+                        association: 'introduction',
+                        attributes: ['id','content']
+                    },
+                    {
+                        association: 'body',
+                        attributes: ['id','content']
+                    },
+                    {
+                        association: 'conclusion',
+                        attributes: ['id','content']
+                    },
+                ],
+                attributes: ['id','updatedAt']
+            });
+            // let postsArray = [];
+            // posts.forEach(post => post.content = post.introduction.content + post.body.content + post.conclusion.content );
+            // console.log(posts);
+            res.json(posts);
+        } catch (err) {
+            return res.status(500).json({error : `${err.message}`});
+        }
     },
 
     /**
