@@ -4,7 +4,7 @@ const verifyToken = (req, res, next) => {
 
   try{
     const { headers } = req;
-    console.log(headers);
+    // console.log(headers);
     /* 1. We test if there is an Authorization header in the HTTP request */
     if (!headers?.authorization) { // it's like if if (!headers || !headers.authorization)
       return res.status(401).json({
@@ -14,7 +14,7 @@ const verifyToken = (req, res, next) => {
 
     /* 2. We test if there is a token in the Authorization token */
     const [type, token] = headers.authorization.split(' ');
-    console.log(type,token);
+    // console.log(type,token);
   
     if (type?.toLowerCase() !== (process.env.ACCESS_TOKEN_TYPE)?.toLowerCase() || !token) {
       return res.status(401).json({
