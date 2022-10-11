@@ -38,26 +38,24 @@ On ne vous garantit pas que vous allez conquérir le réseau social, mais l'obje
 - [Swagger](https://swagger.io/)
 - [JWT](https://jwt.io/)
 - [Bcrypt](https://www.bcrypt.fr/)
+
+---
+
+Scripts
+-------
+
+```sh
+# Avec npm
+npm {script}
+```
+
+- `install`: Installe les dépendances.
+- `initdb`: Peuple la base de données.
+- `start`: Démarre le serveur : http://localhost:5050
+
+---
+
 <p>&nbsp;</p>
-
-
-# Installer les dépendances :
-
-	$ npm install
-	
-# Lancez le serveur :
-
-	$ npm start
-
-
-### Commandes utiles :
-
-```  npm run initdb ``` : Ajout des infos dans la base de données
-	
-
-<p>&nbsp;</p>
-
-
 
 ## Auteurs
 
@@ -68,4 +66,5 @@ On ne vous garantit pas que vous allez conquérir le réseau social, mais l'obje
 * **Alexandre JOUANY** _alias_ [@ajouany ](https://github.com/ajouany)
 
 * **Vincent PERON** _alias_ [@Vincent-PERON ](https://github.com/Vincent-PERON)
+
 
