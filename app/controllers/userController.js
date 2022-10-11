@@ -141,14 +141,19 @@ module.exports = {
      * @return {object} Response with JSON 
      */
     async deleteUser(req,res){
-        const userId = parseInt(req.user.sub);
+        try{
+            const userId = parseInt(req.user.sub); // id stocked into the token (cf middleware auth)
 
-        await User.destroy({
-            where: {
-                id: userId
-            }
-        });
-        res.json("User Deleted");
+            await User.destroy({
+                where: {
+                    id: userId
+                }
+            });
+
+        res.json({msg:"Utilisateur supprimé"});
+        } catch (error) {
+            res.json({error : error.message});
+        }    
     },
 
     /**
@@ -158,34 +163,38 @@ module.exports = {
      * @return {object} Response with JSON 
     */
     async getAlluserPosts(req,res){
-        const userId = parseInt(req.user.sub);
-        const userPosts = await User.findByPk(userId, {
-            attributes: ['id','firstname','lastname'],
-            include: [
-                {
-                    association: 'posts',
-                    include: [
-                        {
-                            association: 'introduction',
-                            attributes: ['id','content']
+        try {
+            const userId = parseInt(req.user.sub); // id stocked into the token (cf middleware auth)
+            const userPosts = await User.findByPk(userId, {
+                attributes: ['id','firstname','lastname'],
+                include: [
+                    {
+                        association: 'posts',
+                        include: [
+                            {
+                                association: 'introduction',
+                                attributes: ['id','content']
+                            },
+                            {
+                                association: 'body',
+                                attributes: ['id','content']
+                            },
+                            {
+                                association: 'conclusion',
+                                attributes: ['id','content']
+                            },
+                        ],
+                        attributes: ['id','updatedAt'],
+                        through: {
+                            attributes: [] // To don't return the through table attributes
                         },
-                        {
-                            association: 'body',
-                            attributes: ['id','content']
-                        },
-                        {
-                            association: 'conclusion',
-                            attributes: ['id','content']
-                        },
-                    ],
-                    attributes: ['id','updatedAt'],
-                    through: {
-                        attributes: [] // To don't return the through table attributes
                     },
-                },
-        ] 
-        });
-        res.json(userPosts);
+            ] 
+            });
+            res.json(userPosts);
+        } catch (error) {
+            res.json({error : error.message});
+        }
     },
 
     /** Add post to favorites
@@ -195,20 +204,19 @@ module.exports = {
     */
     async addPost(req,res){
         try{
-            console.log(req.body);
             // Get user
-            const userId = parseInt(req.user.sub);
+            const userId = parseInt(req.user.sub); // id stocked into the token (cf middleware auth)
             const user = await User.findByPk(userId);
-            if (!user) return res.status(404).json("Utilisateur introuvable");
+            if (!user) return res.status(404).json({error:"Utilisateur introuvable"});
 
             // Post
             let postToAdd, created = false, message = '' ;
             const { postId } = req.body;
-            console.log(postId);
+
             if (postId) // If we want to add a post of the BDD to a user
             {
-                postToAdd = await Post.findByPk(req.body.postId); // We find the post in the BDD
-                if (!postToAdd) return res.status(404).json("Post introuvable");
+                postToAdd = await Post.findByPk(postId); // We find the post in the BDD
+                if (!postToAdd) return res.status(404).json({error:"Post introuvable"});
             } else { // Add a post generated to a user
                 const { introductionId, bodyId, conclusionId } = req.body;
                 [postToAdd, created] = await Post.findOrCreate({ // We find or create a post from its introduction, body and conclusion id
@@ -223,12 +231,12 @@ module.exports = {
             }    
 
             // Add the association between the post and the user
-            const addResult = await user.addPost(postToAdd);
+            const addResult = await user.addPost(postToAdd); //add is a method of Sequelize
 
-            if (addResult) res.status(201).json(`${message} Ajout du post ${postToAdd.id} en favoris`); 
-            else res.json(`L'utilisateur a déjà enregistré le post ${postToAdd.id}. Ajout impossible`);
+            if (addResult) res.status(201).json({status:`${message} Ajout du post ${postToAdd.id} en favoris`}); 
+            else res.json({error:`L'utilisateur a déjà enregistré le post ${postToAdd.id}. Ajout impossible`});
         } catch (error) {
-            res.json(error);
+            res.json({error : error.message});
         }
     },
 
@@ -241,21 +249,21 @@ module.exports = {
         async deletePost(req,res){
             try{
                 // Get user
-                const userId = parseInt(req.user.sub);
+                const userId = parseInt(req.user.sub); // id stocked into the token (cf middleware auth)
                 const user = await User.findByPk(userId);
-                if (!user) return res.status(404).json("Utilisateur introuvable");
+                if (!user) return res.status(404).json({error:"Utilisateur introuvable"});
                 
                 // Get post
                 const postToDelete = await Post.findByPk(req.params.postId);
-                if (!postToDelete) return res.status(404).json("Post introuvable");
+                if (!postToDelete) return res.status(404).json({error:"Post introuvable"});
 
                 // Delete the association between the post and the user
-                const deleteResult = await user.removePost(postToDelete);
+                const deleteResult = await user.removePost(postToDelete); //remove is a method of Sequelize
 
-                if (deleteResult) res.json(`Suppression post ${req.params.postId} OK`); 
-                else res.json("L'utilisateur n'a pas enregisré ce post. Suppression impossible"); // If the association between the post and the user doesn't exist
+                if (deleteResult) res.json({status:`Suppression post ${req.params.postId} OK`}); 
+                else res.json({error:"L'utilisateur n'a pas enregisré ce post. Suppression impossible"}); // If the association between the post and the user doesn't exist
             } catch (error) {
-                res.json(error);
+                res.json({error : error.message});
             }
         }
 }

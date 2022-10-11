@@ -59,16 +59,33 @@ const loginForm = Joi.object({
         .required()
 });
 
-// update: Joi.object({
-//     firstname:Joi.string(), 
-//     lastname: Joi.string(),
-//     email:Joi.string(), 
-//     password:Joi.string(), 
-//     confirmPassword:Joi.string()
-// })
-// .with('password','confirmPassword')
-// .min(1)
-// .required()
+/**
+ * Schema of a body to add new post
+ * @typedef {object} BodyNewPost
+ * @property {number} introductionId - id of the introduction
+ * @property {number} bodyId - id of the body
+ * @property {number} conclusionId - id of the conclusion
+ */
+
+const bodyNewPost = Joi.object({
+    introductionId: Joi.number().required(),
+    bodyId: Joi.number().required(),
+    conclusionId: Joi.number().required()
+});
+
+/**
+ * Schema of a body to add old post
+ * @typedef {object} BodyOldPost
+ * @property {number} postId - id of the post
+ */
+const bodyOldPost = Joi.object({
+    postId: Joi.number().required(),
+});
+
+const bodyAddPost = Joi.alternatives().try(bodyOldPost,bodyNewPost,);
+
+
+
 
 /** *****************
  *      RESPONSES
@@ -177,12 +194,11 @@ const loginForm = Joi.object({
  */
 
 /**
- * Schema of a user
+ * Schema of details returned for a user
  * @typedef {object} userResponse
  * @property {string} firstname - Firstname of the user
  * @property {string} lastname - Lastname of the user
  * @property {string} email - Email of the user
  */
 
-
-module.exports = { userForm, loginForm, updateUserForm} ;
+module.exports = { userForm, loginForm, updateUserForm, bodyAddPost} ;

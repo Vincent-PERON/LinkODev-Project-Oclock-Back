@@ -85,7 +85,7 @@ router.put('/me', validateBody(schemas.updateUserForm),userController.updateUser
   * @summary Delete the user connected
   * @tags User
   * @security BearerAuth
-  * @return {User} 200 - success response - application/json 
+  * @return {successResponse} 200 - success response, user deleted - application/json 
   */
 router.delete('/me', userController.deleteUser);
 
@@ -103,10 +103,20 @@ router.get('/me/posts', userController.getAlluserPosts);
   * @summary Add post to the favorites of the user connected
   * @tags User
   * @security BearerAuth
-  * @param {BodyNewPost} request.body - Body of the post request to add a new post to an user
-  * @return {BodyNewPost} 200 - success response - application/json 
+  * @param {BodyNewPost|BodyOldPost} request.body - Body of the post request to add a post to an user
+  * @return {successResponse} 200 - success response - application/json 
+  * @example request - Old post
+  * {
+  *   "postId" : 1
+  * }
+  * @example request - New post
+  * {
+  * "introductionId" : 1,
+  * "bodyId" : 1,
+  * "conclusionId" : 1
+  * }
   */
-router.post('/me/posts', userController.addPost);
+router.post('/me/posts',validateBody(schemas.bodyAddPost), userController.addPost);
 
  /**
   * DELETE /me/posts/{postId}
@@ -114,7 +124,7 @@ router.post('/me/posts', userController.addPost);
   * @tags User
   * @param {number} postId.path - Id of the post
   * @security BearerAuth
-  * @return {Post} 200 - success response - application/json 
+  * @return {successResponse} 200 - success response, user deleted - application/json 
   */
 router.delete('/me/posts/:postId', userController.deletePost);
 
