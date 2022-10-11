@@ -4,6 +4,7 @@
   "description": "LinkO'Dev API - Posts generator",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node-dev --no-notify server.js",
     "initdb": "node data/create-tables.js"
