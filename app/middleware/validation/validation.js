@@ -2,34 +2,15 @@ const Joi = require("joi");
 
 const validationModule = {
     /**
-     * Méthode pour valider le body d'une requête
-     * @param {Joi.ObjectSchema} schema schema à respecter
-     * @returns 
+     * Validate the body of the request
+     * @param {Joi.ObjectSchema} schema schema to respect
+     * @return {function|object} if no error, next. Else, return JSON response
      */
     validateBody(schema){
         return (req,res,next)=>{
             const { error } = schema.validate(req.body);
             if(error){
-                // il y a une erreur, que faire ???
-                console.log(schema);
-                res.status(400).json({error:`Problème de format du body de la requête`});
-            }
-            else{
-                next();
-            }
-        }
-    },
-    /**
-     * Méthode pour valider les queryString
-     * @param {Joi.ObjectSchema} schema schema à respecter
-     * @returns 
-     */
-    validateQuery(schema){
-        return (req,res,next)=>{
-            const { error } = schema.validate(req.query);
-            if(error){
-                // il y a une erreur, que faire ???
-                res.status(400).json({message:"Internal error"});
+                res.status(400).json({error:`Problème de format du body de la requête (${error})`});
             }
             else{
                 next();

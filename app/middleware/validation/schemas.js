@@ -18,12 +18,12 @@
  * @property {string} confirmPassword.required - Password of the user
  */
 const userForm = Joi.object({ 
-    firstname:Joi.string().required(), 
+    firstname:Joi.string().required(),
     lastname: Joi.string().required(),
     email:Joi.string().required(), 
     password:Joi.string().required(), 
     confirmPassword:Joi.string().required()
-});
+}).required();
 
 
 /**
@@ -35,7 +35,40 @@ const userForm = Joi.object({
 const loginForm = Joi.object({ 
     email:Joi.string().required(), 
     password:Joi.string().required(), 
+}).required();
+
+/**
+ * Schema of a updateUserForm
+ * @typedef {object} updateUserForm
+ * @property {string} email.required - Email of the user
+ * @property {string} password.required - Password of the user
+ * @property {userForm} update - Object with fields to update for the user
+ */
+ const updateUserForm = Joi.object({ 
+    email:Joi.string().required(), 
+    password:Joi.string().required(),
+    update: Joi.object({
+        firstname:Joi.string(), 
+        lastname: Joi.string(),
+        email:Joi.string(), 
+        password:Joi.string(), 
+        confirmPassword:Joi.string()
+    })
+        .with('password','confirmPassword').error(new Error("Le mot de passe nécessite une confirmation."))
+        .min(1)
+        .required()
 });
+
+// update: Joi.object({
+//     firstname:Joi.string(), 
+//     lastname: Joi.string(),
+//     email:Joi.string(), 
+//     password:Joi.string(), 
+//     confirmPassword:Joi.string()
+// })
+// .with('password','confirmPassword')
+// .min(1)
+// .required()
 
 /** *****************
  *      RESPONSES
@@ -134,5 +167,22 @@ const loginForm = Joi.object({
  * @property {string} content - Content of the post (content of introduction, body and conclusion)
  */
 
+/**
+ * Schema of a user
+ * @typedef {object} User
+ * @property {string} firstname - Firstname of the user
+ * @property {string} lastname - Lastname of the user
+ * @property {string} email - Email of the user
+ * @property {string} password - Password of the user
+ */
 
-module.exports = { userForm, loginForm } ;
+/**
+ * Schema of a user
+ * @typedef {object} userResponse
+ * @property {string} firstname - Firstname of the user
+ * @property {string} lastname - Lastname of the user
+ * @property {string} email - Email of the user
+ */
+
+
+module.exports = { userForm, loginForm, updateUserForm} ;

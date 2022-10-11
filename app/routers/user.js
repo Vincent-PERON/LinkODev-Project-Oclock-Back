@@ -7,6 +7,11 @@ const userController = require('../controllers/userController');
 // Middleware auth for JWT authorization
 const auth = require("./../middleware/authMiddleware");
 
+/* Middleware to validate the body of requests */ 
+const {validateBody} = require('../middleware/validation/validation.js');
+// Schemas definition
+const schemas = require("../middleware/validation/schemas");
+
 const router = new Router();
 
 // All routes that begin with '/me' need a token
@@ -17,7 +22,13 @@ router.use('/me*',auth);
   * @summary Get details of the user connected
   * @tags User
   * @security BearerAuth
-  * @return {User} 200 - success response - application/json 
+  * @return {userResponse} 200 - success response, details of the user - application/json 
+  * @example response - 200 - User details
+  * {
+  *     "firstname" : "Prénom",
+  *     "lastname" : "Nom",
+  *     "email" : "example1@domain.com"
+  * }
   */
 router.get('/me', userController.getUser);
 
@@ -26,7 +37,7 @@ router.get('/me', userController.getUser);
   * @summary Update details of the user connected
   * @tags User
   * @security BearerAuth
-  * @param {BodyUpdateUser} request.body - Body request
+  * @param {updateUserForm} request.body - Body request
   * @return {string} 200 - success response - application/json 
   * @example request - All
   * {
@@ -66,7 +77,8 @@ router.get('/me', userController.getUser);
   * }
   * 
   */
-router.put('/me', userController.updateUser);
+router.put('/me', validateBody(schemas.updateUserForm),userController.updateUser);
+
 
  /**
   * DELETE /me

@@ -37,9 +37,9 @@ User.init({
         },
         // Storing passwords in plaintext in the database is terrible.
         // Hashing the value with an appropriate cryptographic hash function is better.
-        // set (value) {
-        //     this.setDataValue('password', bcrypt.hashSync(value,10));
-        // }
+        set (value) {
+            this.setDataValue('password', bcrypt.hashSync(value,10));
+        }
     },
 
     firstname: { 
@@ -78,13 +78,13 @@ User.init({
 /** 
  * Storing passwords in plaintext in the database is terrible
  * Hashing the value with an appropriate cryptographic hash function is better.
- * Hash the password after validation of the format of the user
+ * Hash the password before save the user
  * https://sequelize.org/docs/v6/other-topics/hooks/#declaring-hooks
  */
-User.afterValidate(async (user) => {
-    const hashedPassword = await bcrypt.hash(user.password,10);
-    user.password = hashedPassword;
-})
+// User.beforeSave(async (user) => {
+//     const hashedPassword = await bcrypt.hash(user.password,10);
+//     user.password = hashedPassword;
+// })
 
 /**
  * Function to check if the password in parameter matches the password of the User model instance
