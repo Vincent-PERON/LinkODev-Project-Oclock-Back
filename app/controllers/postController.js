@@ -8,69 +8,80 @@ module.exports = {
 
     /**
      * Get all posts
-     * @param {*} _ 
-     * @param {*} res HTTP response from Express app
+     * @param {object} _ HTTP request from Express app - NOT USED
+     * @param {object} res HTTP response from Express app
+     * @return {object} Response with JSON 
      */
     async getAllPosts(_, res) {
-        const posts = await Post.findAll({
-            include: [
-                {
-                    association: 'introduction',
-                    attributes: ['id','content']
-                },
-                {
-                    association: 'body',
-                    attributes: ['id','content']
-                },
-                {
-                    association: 'conclusion',
-                    attributes: ['id','content']
-                },
-            ],
-            attributes: ['id','updatedAt']
-        });
-        // let postsArray = [];
-        // posts.forEach(post => post.content = post.introduction.content + post.body.content + post.conclusion.content );
-        // console.log(posts);
-        res.json(posts);
+        try {
+            const posts = await Post.findAll({
+                include: [
+                    {
+                        association: 'introduction',
+                        attributes: ['id','content']
+                    },
+                    {
+                        association: 'body',
+                        attributes: ['id','content']
+                    },
+                    {
+                        association: 'conclusion',
+                        attributes: ['id','content']
+                    },
+                ],
+                attributes: ['id','updatedAt']
+            });
+            // let postsArray = [];
+            // posts.forEach(post => post.content = post.introduction.content + post.body.content + post.conclusion.content );
+            // console.log(posts);
+            return res.json(posts);
+        } catch (err) {
+            return res.status(500).json({error : `${err.message}`});
+        }
     },
 
     /**
      * Get all 3 latest posts
      * @param {*} _ 
      * @param {*} res HTTP response from Express app
+     * @return {object} Response with JSON 
      */
     async getLatestPosts(_, res) {
-        const latestPosts = await Post.findAll({
-            limit: 3, 
-            include: [
-                {
-                    association: 'introduction',
-                    attributes: ['id','content']
-                },
-                {
-                    association: 'body',
-                    attributes: ['id','content']
-                },
-                {
-                    association: 'conclusion',
-                    attributes: ['id','content']
-                },
-            ],
-            order: [
-                ['updatedAt', 'DESC'],
+        try{
+            const latestPosts = await Post.findAll({
+                limit: 3, 
+                include: [
+                    {
+                        association: 'introduction',
+                        attributes: ['id','content']
+                    },
+                    {
+                        association: 'body',
+                        attributes: ['id','content']
+                    },
+                    {
+                        association: 'conclusion',
+                        attributes: ['id','content']
+                    },
                 ],
-            // attributes: { exclude: ['createdAt', 'updatedAt'] }
-            attributes : ['id','updatedAt']
-            
-        });
-        res.json(latestPosts);
+                order: [
+                    ['updatedAt', 'DESC'],
+                    ],
+                // attributes: { exclude: ['createdAt', 'updatedAt'] }
+                attributes : ['id','updatedAt']
+                
+            });
+            return res.json(latestPosts);
+        } catch (err) {
+            return res.status(500).json({error : `${err.message}`});
+        }
     },
 
     /**
      * Get a random post by Id
      * @param {*} req HTTP request to Express app
      * @param {*} res HTTP response from Express app
+     * @return {object} Response with JSON 
      */
      async getrandomPostById(req, res) {
         try {
@@ -116,21 +127,10 @@ module.exports = {
                 content : postContent
             }
 
-            res.json (randomPost);
+            return res.json (randomPost);
 
-        } catch (error) {
-            res.status(500).json({error: "Internal Server Error (Get random post)"});
-            console.error(error);
-        }   
+        } catch (err) {
+            return res.status(500).json({error : `${err.message}`});
+        }  
     },
-
-    /**
-     * Delete a post by id
-     * @param {*} _ 
-     * @param {*} res HTTP response from Express app
-     */
-    async deletePost(req, res) {
-        const post = await Post.findByPk(req.params.id)
-        },
-
 }

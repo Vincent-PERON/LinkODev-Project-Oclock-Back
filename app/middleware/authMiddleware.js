@@ -4,21 +4,21 @@ const verifyToken = (req, res, next) => {
 
   try{
     const { headers } = req;
-    console.log(headers);
+    // console.log(headers);
     /* 1. We test if there is an Authorization header in the HTTP request */
     if (!headers?.authorization) { // it's like if if (!headers || !headers.authorization)
       return res.status(401).json({
-        message: 'Missing Authorization header'
+        error: 'Missing Authorization header'
       });
     }
 
     /* 2. We test if there is a token in the Authorization token */
     const [type, token] = headers.authorization.split(' ');
-    console.log(type,token);
+    // console.log(type,token);
   
     if (type?.toLowerCase() !== (process.env.ACCESS_TOKEN_TYPE)?.toLowerCase() || !token) {
       return res.status(401).json({
-        message: 'Header format is Authorization: Bearer token'
+        error: 'Header format is Authorization: Bearer token'
       });
     }
 
@@ -28,7 +28,7 @@ const verifyToken = (req, res, next) => {
     /*4. Transfer token to next middleware */ 
     req.user = decoded;
   } catch (err) {
-    return res.status(401).send("Invalid Token");
+      return res.status(401).json({error : "Invalid Token"});
   }
   return next();
 };

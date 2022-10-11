@@ -1,5 +1,4 @@
 const { Router } = require("express");
-
 const router = new Router();
 
 /* Routers */
@@ -22,10 +21,10 @@ expressJSDocSwagger(router)(options);
 /*  ROUTERS */
 /** ****** */
 
-router.use(userRouter);
 router.use(authRouter);
-router.use(postRouter);
-router.use(tagRouter);
- 
+router.use('/me',userRouter);
+router.use('/posts',postRouter);
+router.use('/tags',tagRouter);
+router.use('*',(req,res) => res.status(404).json({error:"Route indéterminée"}));
 
 module.exports = router; 
