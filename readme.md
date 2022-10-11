@@ -1,63 +1,71 @@
-# LinkO'Dev  - Aide à la génération de posts pour Linkedin
-<p>&nbsp;</p>
+# LinkO'Dev  - Aide à la génération de posts pour LinkedIn - BACK
 
-## Convention de nommage des commits
-
-|terms |Description |
-| :--------------- | :-----|
-|build |Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)|
-|ci |Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)|
-|docs |Documentation only changes|
-|feat |A new feature|
-|fix |A bug fix|
-|perf |A code change that improves performance|
-|refactor| A code change that neither fixes a bug nor adds a feature|
-|style |Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)|
-|test |Adding missing tests or correcting existing tests|
+Avec plus de 10 millions d’utilisateurs actifs mensuels, LinkedIn™ est le premier réseau social français qui met en relation les professionnels. Vous avez envie de vous démarquer sur ce réseau ? Vous ne savez pas comment rédiger du contenu plus attractif que ceux de vos concurrents ? LinkO’Dev va vous permettre de générer des posts efficaces et avec du contenu intéressant.
 
 <p>&nbsp;</p>
 
-## Commandes GIT
+LinkO’Dev a pour but de fournir un générateur de posts avec une introduction, un corps et une conclusion. Il suffit de choisir un ou plusieurs mots-clés, et le générateur s'occupe de créer à votre place une intro qui claque, un corps de post bodybuildé, et une chouette conclusion. 
+Une fois le post généré, il vous suffit de le copier et de le modifier avant de le publier.
+
+On ne vous garantit pas que vous allez conquérir le réseau social, mais l'objectif est de rendre moins chronophage la publication de contenu.
 <p>&nbsp;</p>
 
-### Création d'une branche de fonctionnalité
-```bash
-git checkout develop
-git checkout -b <nom-de-la-feature>
-```
+## [Demo](https://linkodev.cyber-one.fr/)
+<p>&nbsp;</p>
+
+### Fonctionnalités du Projet
+
+- Génération d'un post aléatoire suivant des tags
+- Inscription d’un utilisateur
+- Connexion d’un utilisateur
+- Edition du compte Utilisateur
+- Copier vers le presse-papier
+- Ajout d’un post en favoris
+- Page d’erreur (404)
+
+
+## Pré-requis:
+
+- [Node JS](https://nodejs.org/en/)
+- [Npm](https://www.npmjs.com/)
+- [PostgreSQL](https://www.postgresql.org/)
+
+
+## Langages & modules utilisés 
+
+- [Express.JS](https://expressjs.com/fr/)
+- [Sequelize](https://sequelize.org/)
+- [Swagger](https://swagger.io/)
+- [JWT](https://jwt.io/)
+- [Bcrypt](https://www.bcrypt.fr/)
 <p>&nbsp;</p>
 
 
-### mise à jour d'une branche de fonctionnalité
-```bash
-git add .
-git commit -m "votre_commit"
-git push origin <nom-de-la-branche>
-```
+# Installer les dépendances :
+
+	$ npm install
+	
+# Lancez le serveur :
+
+	$ npm start
+
+
+### Commandes utiles :
+
+```  npm run initdb ``` : Ajout des infos dans la base de données
+	
+
 <p>&nbsp;</p>
 
 
-### Terminer une branche de fonctionnalité
-```bash
-git checkout develop
-git merge nom-de-la-feature
-```
-<p>&nbsp;</p>
 
-### Récupéré la branch develop
-```bash
-git pull develop
-```
-<p>&nbsp;</p>
+## Auteurs
 
-### Envoyer la branche develop vers la master 
-```bash
-git checkout main
-git merge develop
-```
-<p>&nbsp;</p>
+* **Estelle Rozée** _alias_ [@Estelle-Rozee](https://github.com/Estelle-Rozee)
 
-### Suppression de la branch d'une feature
-```bash
-git branch -d feature_branch
-```
+* **Loïc Picart** _alias_ [@Loicpicart](https://github.com/Loicpicart)
+
+* **Alexandre JOUANY** _alias_ [@ajouany ](https://github.com/ajouany)
+
+* **Vincent PERON** _alias_ [@Vincent-PERON ](https://github.com/Vincent-PERON)
+
