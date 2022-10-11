@@ -15,7 +15,7 @@ const schemas = require("../middleware/validation/schemas");
 const router = new Router();
 
 // All routes that begin with '/me' need a token
-router.use('/me*',auth);
+router.use(auth);
 
  /**
   * GET /me
@@ -30,7 +30,7 @@ router.use('/me*',auth);
   *     "email" : "example1@domain.com"
   * }
   */
-router.get('/me', userController.getUser);
+router.get('/', userController.getUser);
 
 /**
   * PUT /me
@@ -77,7 +77,7 @@ router.get('/me', userController.getUser);
   * }
   * 
   */
-router.put('/me', validateBody(schemas.updateUserForm),userController.updateUser);
+router.put('/', validateBody(schemas.updateUserForm),userController.updateUser);
 
 
  /**
@@ -87,7 +87,7 @@ router.put('/me', validateBody(schemas.updateUserForm),userController.updateUser
   * @security BearerAuth
   * @return {successResponse} 200 - success response, user deleted - application/json 
   */
-router.delete('/me', userController.deleteUser);
+router.delete('/', userController.deleteUser);
 
 /**
   * GET /me/posts
@@ -96,7 +96,7 @@ router.delete('/me', userController.deleteUser);
   * @security BearerAuth
   * @return {array<Post>} 200 - success response - application/json 
   */
-router.get('/me/posts', userController.getAlluserPosts);
+router.get('/posts', userController.getAlluserPosts);
 
  /**
   * POST /me/posts
@@ -116,7 +116,7 @@ router.get('/me/posts', userController.getAlluserPosts);
   * "conclusionId" : 1
   * }
   */
-router.post('/me/posts',validateBody(schemas.bodyAddPost), userController.addPost);
+router.post('/posts',validateBody(schemas.bodyAddPost), userController.addPost);
 
  /**
   * DELETE /me/posts/{postId}
@@ -126,6 +126,6 @@ router.post('/me/posts',validateBody(schemas.bodyAddPost), userController.addPos
   * @security BearerAuth
   * @return {successResponse} 200 - success response, user deleted - application/json 
   */
-router.delete('/me/posts/:postId', userController.deletePost);
+router.delete('/posts/:postId', userController.deletePost);
 
 module.exports = router;

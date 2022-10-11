@@ -2,6 +2,7 @@
 /*  AUTH */
 /** **** */
 const { Router } = require("express");
+
 const router = new Router();
 
 /* Middleware to validate the body of requests */ 
@@ -12,6 +13,7 @@ const schemas = require("../middleware/validation/schemas");
 
 // Controllers called by routes
 const authController = require('../controllers/authController');
+
 
 /**
 * POST /register

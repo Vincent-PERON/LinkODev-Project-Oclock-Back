@@ -15,7 +15,7 @@ const router = new Router();
  * @tags Tag
  * @return {array<Tag>} 200 - success response - application/json 
  */
- router.get('/tags', tagController.getAllTags);
+ router.get('/', tagController.getAllTags);
 
 
  module.exports = router;

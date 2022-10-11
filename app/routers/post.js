@@ -15,7 +15,7 @@ const postController = require('../controllers/postController');
 * @tags Post
 * @return {array<Post>} 200 - success response, array of posts - application/json 
 */
-router.get('/posts', postController.getAllPosts);
+router.get('/', postController.getAllPosts);
  
 /**
 * GET /posts/latest
@@ -23,7 +23,7 @@ router.get('/posts', postController.getAllPosts);
 * @tags Post
 * @return {array<Post>} 200 - success response, array of the 3 latest posts - application/json 
 */
-router.get('/posts/latest', postController.getLatestPosts);
+router.get('/latest', postController.getLatestPosts);
  
 /**
 * GET /posts/random
@@ -32,6 +32,6 @@ router.get('/posts/latest', postController.getLatestPosts);
 * @param {array<integer>} tags.query - Array of tags to generate a random post
 * @return { PostWithTags } 200 - success response, random post - application/json 
 */  
-router.get('/posts/random', postController.getrandomPostById);
+router.get('/random', postController.getrandomPostById);
 
 module.exports = router;
