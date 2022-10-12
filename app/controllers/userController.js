@@ -115,6 +115,7 @@ module.exports = {
             }
             */
             const result = await user.update(req.body.update);
+            console.log(result);
             messageSuccess += "Compte utilisateur mis à jour"
 
             res.json({
@@ -126,12 +127,9 @@ module.exports = {
                 }
             });    
 
-
-        } catch (error) {
-            res.json({
-                error : error.message
-            });
-        }  
+        } catch (err) {
+            return res.status(400).json({error : `${err.message}`});
+        }
     },
 
     /**
@@ -151,9 +149,9 @@ module.exports = {
             });
 
         res.json({msg:"Utilisateur supprimé"});
-        } catch (error) {
-            res.json({error : error.message});
-        }    
+        } catch (err) {
+            return res.status(400).json({error : `${err.message}`});
+        } 
     },
 
     /**
@@ -192,8 +190,8 @@ module.exports = {
             ] 
             });
             res.json(userPosts);
-        } catch (error) {
-            res.json({error : error.message});
+        } catch (err) {
+            return res.status(400).json({error : `${err.message}`});
         }
     },
 
@@ -235,8 +233,8 @@ module.exports = {
 
             if (addResult) res.status(201).json({status:`${message} Ajout du post ${postToAdd.id} en favoris`}); 
             else res.json({error:`L'utilisateur a déjà enregistré le post ${postToAdd.id}. Ajout impossible`});
-        } catch (error) {
-            res.json({error : error.message});
+        } catch (err) {
+            return res.status(400).json({error : `${err.message}`});
         }
     },
 
@@ -262,8 +260,8 @@ module.exports = {
 
                 if (deleteResult) res.json({status:`Suppression post ${req.params.postId} OK`}); 
                 else res.json({error:"L'utilisateur n'a pas enregisré ce post. Suppression impossible"}); // If the association between the post and the user doesn't exist
-            } catch (error) {
-                res.json({error : error.message});
+            } catch (err) {
+                return res.status(400).json({error : `${err.message}`});
             }
         }
 }

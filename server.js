@@ -3,7 +3,6 @@ require('dotenv').config();
 // librairies
 const express = require('express');
 
-
 // CORS Library
 const cors = require('cors');
 
@@ -32,18 +31,6 @@ const corsOptions = {
 }
 
 
-/* OPTION WITH MULTIPLE ORIGINS 
-var whitelist = process.env.CORS_ORIGINS?.split(',').map(origin => origin.trim()) || '*';
-var corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  }
-}
-*/
 
 console.log(corsOptions);
 app.use(cors(corsOptions)); 

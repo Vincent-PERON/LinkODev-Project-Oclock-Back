@@ -5,6 +5,7 @@ const sequelize = require('../database');
 const jwt = require('jsonwebtoken');
 
 const bcrypt = require('bcrypt');
+const passwordValidator = require('password-validator');
 
 class User extends Sequelize.Model {};
 
@@ -22,22 +23,26 @@ User.init({
     
     password: { 
         type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-            isStrongPassword: {
-                args: [{
-                    minLength: 8,
-                    minLowercase: 1,
-                    minUppercase: 1,
-                    minNumbers: 2,
-                    minSymbols: 0,
-                  }],
-                msg: `Le mot de passe ne remplit pas les critères de sécurité (minimum 8 caractères, 1 majuscule, 1 minuscule, 2 chiffres).`    
-           }
-        },
+        allowNull: false,     
+
         // Storing passwords in plaintext in the database is terrible.
         // Hashing the value with an appropriate cryptographic hash function is better.
         set (value) {
+            const schema = new passwordValidator();
+
+                // Add properties to it
+                schema
+                                .is().min(8,'8 caractères')                                    // Minimum length 8
+                                .is().max(30, '30 caractères max')                                  // Maximum length 100
+                                .has().uppercase(1, '1 majuscule')                              // Must have uppercase letters
+                                .has().lowercase(1, '1 minuscule')                              // Must have lowercase letters
+                                .has().digits(2, '2 chiffres')   
+                                .has().symbols(1, '1 caractère spécial (@!+$*€)') 
+                const result = schema.validate(value,{ details: true });
+                console.log(value,result)
+                // if (result.length) throw new Error('Le mot de passe ne remplit pas les critères de sécurité. 8 caractères minimum, 1 majuscule, 1 chiffre, 1 caratère spécial');
+                if (result.length) throw new Error(`Le mot de passe doit contenir : ${result.map(x => x.message).join(', ')}`);
+            
             this.setDataValue('password', bcrypt.hashSync(value,10));
         }
     },
