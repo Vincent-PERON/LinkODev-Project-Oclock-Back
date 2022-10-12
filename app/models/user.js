@@ -39,7 +39,7 @@ User.init({
                 // Add properties to it
                 schema
                                 .is().min(8,'8 caractères')             // Minimum length 8
-                                .is().max(30, '30 caractères max')     // Maximum length 30 (xss fails)
+                                .is().max(100, '100 caractères max')     // Maximum length 30 (xss fails)
                                 .has().uppercase(1, '1 majuscule')     // Must have uppercase letters
                                 .has().lowercase(1, '1 minuscule')     // Must have lowercase letters
                                 .has().digits(2, '2 chiffres')         // Must have digits
