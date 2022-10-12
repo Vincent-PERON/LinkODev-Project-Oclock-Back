@@ -199,14 +199,14 @@ module.exports = {
                     },
                 });
                 // If we create the post, add a message
-                if (created) message += `Création du post ${postToAdd.id} [i:${postToAdd.introduction_id},b:${postToAdd.body_id},c:${postToAdd.conclusion_id}].`;
+                if (created) message += `Création du post.`;
             }    
 
             // Add the association between the post and the user
             const addResult = await user.addPost(postToAdd); //add is a method of Sequelize
 
-            if (addResult) res.status(201).json({status:`${message} Ajout du post ${postToAdd.id} en favoris`}); 
-            else res.json({error:`L'utilisateur a déjà enregistré le post ${postToAdd.id}. Ajout impossible`});
+            if (addResult) res.status(201).json({status:`Ajout du post en favoris`}); 
+            else res.json({error:`Vous avez déjà enregistré ce post en favoris !`});
         } catch (err) {
             return res.status(400).json({error : `${err.message}`});
         }

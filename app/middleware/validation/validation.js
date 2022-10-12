@@ -10,7 +10,7 @@ const validationModule = {
         return (req,res,next)=>{
             const { error } = schema.validate(req.body);
             if(error){
-                res.status(400).json({error:`Problème de format du body de la requête (${error})`});
+                res.status(400).json({error: error.message});
             }
             else{
                 next();

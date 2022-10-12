@@ -19,12 +19,12 @@ const Joi = require('joi');
  * @property {string} confirmPassword.required - Password of the user
  */
 const userForm = Joi.object({ 
-    firstname:Joi.string().required(),
-    lastname: Joi.string().required(),
-    email:Joi.string().required(), 
-    password:Joi.string().required(), 
-    confirmPassword:Joi.string().required()
-}).required();
+    firstname: Joi.string().required().error(new Error("Le prénom est nécessaire")),
+    lastname: Joi.string().required().error(new Error("Le nom est nécessaire")),
+    email:Joi.string().required().error(new Error("l'email est nécessaire")), 
+    password:Joi.string().required().error(new Error("le mot de passe est nécessaire")), 
+    confirmPassword:Joi.string().required().error(new Error("la confirmation du mot de passe est obligatoire"))
+}).required()
 
 
 /**
@@ -34,8 +34,8 @@ const userForm = Joi.object({
  * @property {string} password.required - Password of the user
  */
 const loginForm = Joi.object({ 
-    email:Joi.string().required(), 
-    password:Joi.string().required(), 
+    email:Joi.string().required().error(new Error("L'email est nécessaire")), 
+    password:Joi.string().required().error(new Error("Le mot de passe est nécessaire")), 
 }).required();
 
 
@@ -47,8 +47,8 @@ const loginForm = Joi.object({
  * @property {userForm} update - Object with fields to update for the user
  */
 const updateUserForm = Joi.object({ 
-    email:Joi.string().required(), 
-    password:Joi.string().required(),
+    email:Joi.string().required().error(new Error("L'email est nécessaire")), 
+    password:Joi.string().required().error(new Error("Le mot de passe est nécessaire")),
     update: Joi.object({
         firstname:Joi.string(), 
         lastname: Joi.string(),
@@ -57,7 +57,7 @@ const updateUserForm = Joi.object({
         confirmPassword:Joi.string()
     })
         .with('password','confirmPassword').error(new Error("Le mot de passe nécessite une confirmation."))
-        .min(1)
+        .min(1).error(new Error("Au moins un champ à mettre à jour est nécessaire"))
         .required()
 });
 
@@ -71,9 +71,9 @@ const updateUserForm = Joi.object({
  */
 
 const bodyNewPost = Joi.object({
-    introductionId: Joi.number().required(),
-    bodyId: Joi.number().required(),
-    conclusionId: Joi.number().required()
+    introductionId: Joi.number().required().error(new Error("Id d'introduction nécessaire")),
+    bodyId: Joi.number().required().error(new Error("Id de body nécessaire")),
+    conclusionId: Joi.number().required().error(new Error("Id de conclusion nécessaire"))
 });
 
 /**
@@ -82,10 +82,10 @@ const bodyNewPost = Joi.object({
  * @property {number} postId - id of the post
  */
 const bodyOldPost = Joi.object({
-    postId: Joi.number().required(),
+    postId: Joi.number().required().error(new Error("Id de Post nécessaire")),
 });
 
-const bodyAddPost = Joi.alternatives().try(bodyOldPost,bodyNewPost,);
+const bodyAddPost = Joi.alternatives().try(bodyOldPost,bodyNewPost);
 
 
 
