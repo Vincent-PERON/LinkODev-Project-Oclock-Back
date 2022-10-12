@@ -4,9 +4,10 @@
 
 /** 
  * joi lets you describe your data using a simple, intuitive, and readable language.
- * ttps://joi.dev/api/?v=17.6.1
+ * https://joi.dev/api/?v=17.6.1
  */
- const Joi = require('joi');
+const Joi = require('joi');
+
 
 /**
  * Schema of a userForm
@@ -37,6 +38,7 @@ const loginForm = Joi.object({
     password:Joi.string().required(), 
 }).required();
 
+
 /**
  * Schema of a updateUserForm
  * @typedef {object} updateUserForm
@@ -44,7 +46,7 @@ const loginForm = Joi.object({
  * @property {string} password.required - Password of the user
  * @property {userForm} update - Object with fields to update for the user
  */
- const updateUserForm = Joi.object({ 
+const updateUserForm = Joi.object({ 
     email:Joi.string().required(), 
     password:Joi.string().required(),
     update: Joi.object({
@@ -58,6 +60,7 @@ const loginForm = Joi.object({
         .min(1)
         .required()
 });
+
 
 /**
  * Schema of a body to add new post

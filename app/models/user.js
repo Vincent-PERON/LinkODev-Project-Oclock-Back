@@ -1,15 +1,21 @@
 require('dotenv').config();
 const Sequelize = require('sequelize');
 const sequelize = require('../database');
+
 /* JWT Token */
 const jwt = require('jsonwebtoken');
 
+/* Bcrypt */
 const bcrypt = require('bcrypt');
+
+/* Password validators */
 const passwordValidator = require('password-validator');
+
 
 class User extends Sequelize.Model {};
 
 User.init({
+
     email: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -32,18 +38,19 @@ User.init({
 
                 // Add properties to it
                 schema
-                                .is().min(8,'8 caractères')                                    // Minimum length 8
-                                .is().max(30, '30 caractères max')                                  // Maximum length 100
-                                .has().uppercase(1, '1 majuscule')                              // Must have uppercase letters
-                                .has().lowercase(1, '1 minuscule')                              // Must have lowercase letters
-                                .has().digits(2, '2 chiffres')   
-                                .has().symbols(1, '1 caractère spécial (@!+$*€)') 
+                                .is().min(8,'8 caractères')             // Minimum length 8
+                                .is().max(30, '30 caractères max')     // Maximum length 30 (xss fails)
+                                .has().uppercase(1, '1 majuscule')     // Must have uppercase letters
+                                .has().lowercase(1, '1 minuscule')     // Must have lowercase letters
+                                .has().digits(2, '2 chiffres')         // Must have digits
+                                .has().symbols(1, '1 caractère spécial (@!+$*€)')   // Must have symbols
+                
+                // Check if passwords respects the security rules
                 const result = schema.validate(value,{ details: true });
-                console.log(value,result)
-                // if (result.length) throw new Error('Le mot de passe ne remplit pas les critères de sécurité. 8 caractères minimum, 1 majuscule, 1 chiffre, 1 caratère spécial');
                 if (result.length) throw new Error(`Le mot de passe doit contenir : ${result.map(x => x.message).join(', ')}`);
-            
-            this.setDataValue('password', bcrypt.hashSync(value,10));
+
+                // If password respects the security rules -> Hashing password
+                this.setDataValue('password', bcrypt.hashSync(value,10));
         }
     },
 
@@ -80,16 +87,6 @@ User.init({
     tableName: "user"
 });
 
-/** 
- * Storing passwords in plaintext in the database is terrible
- * Hashing the value with an appropriate cryptographic hash function is better.
- * Hash the password before save the user
- * https://sequelize.org/docs/v6/other-topics/hooks/#declaring-hooks
- */
-// User.beforeSave(async (user) => {
-//     const hashedPassword = await bcrypt.hash(user.password,10);
-//     user.password = hashedPassword;
-// })
 
 /**
  * Function to check if the password in parameter matches the password of the User model instance

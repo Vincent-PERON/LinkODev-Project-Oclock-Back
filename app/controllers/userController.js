@@ -55,13 +55,11 @@ module.exports = {
             // Test if the couple (email and password) of the user are valids. 
             assert.ok(user.email === email &&  validPassword, 'Ancien mot de passe et/ou email invalide');
 
+
             // New email ?
             if (update?.email) {
                 // Check if new email is new
                 assert.ok(email !== update.email, `Votre nouvel email est identique à votre ancien email.`);
-
-                // Check if new email is valid
-                // assert.ok(validator.validate(update.email), `${update.email} n'est pas un email valide.`); 
 
                 // Check if another user has this email
                 const userFound = await User.findOne({
@@ -75,7 +73,7 @@ module.exports = {
 
                 // If all is ok, change the email of the user
                 user.email = update.email; // Update the email
-                messageSuccess += `Nouvel email : ${user.email}.`
+                messageSuccess += `Mise à jour de l'email réussie.`
             }
 
 
@@ -83,39 +81,14 @@ module.exports = {
             if (update?.password) {
                 // Check if the confirm password is the same
                 assert.ok(update.password === update.confirmPassword, `Le nouveau mot de passe et sa confirmation ne sont pas identiques.`); 
-            /*
+            
                 // Check if the user change his password
                 assert.ok(update.password !== password, `Le nouveau mot de passe doit être différent de l'ancien.`); 
-
-                // Check is the format of the password is OK
-                assert.ok(schema.validate(update.password), `Le mot de passe ne remplit pas les critères de sécurité.`);
-
-            
-                // If all is ok, change the password of the user
-                // note : password is hashed with bcrypt in the User model
-                user.password = update.password; // Update the password
-                await user.save();
-            */
-                messageSuccess += `Nouveau mot de passe.`;
+                messageSuccess += `Mise à jour du mot de passe réussie.`
             }
 
-            /*
-            // New firstname ? 
-            if (update?.firstname) {
-                user.firstname = update.firstname; // Update the firstname
-                await user.save();
-                messageSuccess += `Nouveau prénom : ${user.firstname}.`;
-            }
-
-            // New lastname ?
-            if (update.lastname) {
-                user.lastname = update.lastname; // Update the lastname
-                await user.save();
-                messageSuccess += `Nouveau nom : ${user.lastname}. `
-            }
-            */
+            /* Update profile in DB */
             const result = await user.update(req.body.update);
-            console.log(result);
             messageSuccess += "Compte utilisateur mis à jour"
 
             res.json({
@@ -154,6 +127,7 @@ module.exports = {
         } 
     },
 
+    
     /**
      * Get all posts of one user     
      * @param {object} req HTTP request to Express app - NOT USED

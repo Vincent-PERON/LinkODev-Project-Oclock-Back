@@ -30,13 +30,9 @@ const corsOptions = {
   optionsSuccessStatus: 200 // For legacy browser support
 }
 
-
-
-console.log(corsOptions);
 app.use(cors(corsOptions)); 
 
 app.use(router);
-// app.use('*',(req,res) => res.json({error:"404-Where are you?"}));
 
 
 // on met le serveur en mode écoute pour entre les requêtes HTTP arriver
