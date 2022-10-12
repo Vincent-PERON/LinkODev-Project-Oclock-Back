@@ -48,7 +48,7 @@ module.exports = {
      * @param {integer} tagId id of the tag
      * @return {Body} Random body with the tag id
      */
-     async getRandomBodyWithTag(tagId) {
+    async getRandomBodyWithTag(tagId) {
         const body = await Body.findOne({
             attributes: ['id','content'], // If we just want content instead of all columns
             include: [{
@@ -73,7 +73,7 @@ module.exports = {
      * @param {integer} tagId id of the tag
      * @return {Conclusion} Random conclusion with the tag id
      */
-     async getRandomConclusionWithTag(tagId) {
+    async getRandomConclusionWithTag(tagId) {
         const conclusion = await Conclusion.findOne({
             attributes: ['id','content'], // If we just want content instead of all columns
             include: [{

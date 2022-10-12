@@ -8,7 +8,7 @@ const verifyToken = (req, res, next) => {
     /* 1. We test if there is an Authorization header in the HTTP request */
     if (!headers?.authorization) { // it's like if if (!headers || !headers.authorization)
       return res.status(401).json({
-        error: 'Missing Authorization header'
+        error: 'Vous devez vous connecter '
       });
     }
 
@@ -18,7 +18,7 @@ const verifyToken = (req, res, next) => {
   
     if (type?.toLowerCase() !== (process.env.ACCESS_TOKEN_TYPE)?.toLowerCase() || !token) {
       return res.status(401).json({
-        error: 'Header format is Authorization: Bearer token'
+        error: "Jeton de sécurité non valide (type), Veuillez vous reconnecter"
       });
     }
 
@@ -28,7 +28,7 @@ const verifyToken = (req, res, next) => {
     /*4. Transfer token to next middleware */ 
     req.user = decoded;
   } catch (err) {
-      return res.status(401).json({error : "Invalid Token"});
+      return res.status(401).json({error : "Jeton de sécurité non valide, Veuillez vous reconnecter"});
   }
   return next();
 };

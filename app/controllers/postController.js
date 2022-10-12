@@ -31,9 +31,7 @@ module.exports = {
                 ],
                 attributes: ['id','updatedAt']
             });
-            // let postsArray = [];
-            // posts.forEach(post => post.content = post.introduction.content + post.body.content + post.conclusion.content );
-            // console.log(posts);
+            
             return res.json(posts);
         } catch (err) {
             return res.status(500).json({error : `${err.message}`});
@@ -67,7 +65,6 @@ module.exports = {
                 order: [
                     ['updatedAt', 'DESC'],
                     ],
-                // attributes: { exclude: ['createdAt', 'updatedAt'] }
                 attributes : ['id','updatedAt']
                 
             });
@@ -83,7 +80,7 @@ module.exports = {
      * @param {*} res HTTP response from Express app
      * @return {object} Response with JSON 
      */
-     async getrandomPostById(req, res) {
+    async getrandomPostById(req, res) {
         try {
             let tagId;
             /* Get list of tags selected in front app*/

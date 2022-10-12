@@ -55,13 +55,11 @@ module.exports = {
             // Test if the couple (email and password) of the user are valids. 
             assert.ok(user.email === email &&  validPassword, 'Ancien mot de passe et/ou email invalide');
 
+
             // New email ?
             if (update?.email) {
                 // Check if new email is new
                 assert.ok(email !== update.email, `Votre nouvel email est identique à votre ancien email.`);
-
-                // Check if new email is valid
-                // assert.ok(validator.validate(update.email), `${update.email} n'est pas un email valide.`); 
 
                 // Check if another user has this email
                 const userFound = await User.findOne({
@@ -75,7 +73,7 @@ module.exports = {
 
                 // If all is ok, change the email of the user
                 user.email = update.email; // Update the email
-                messageSuccess += `Nouvel email : ${user.email}.`
+                messageSuccess += `Mise à jour de l'email réussie.`
             }
 
 
@@ -83,37 +81,13 @@ module.exports = {
             if (update?.password) {
                 // Check if the confirm password is the same
                 assert.ok(update.password === update.confirmPassword, `Le nouveau mot de passe et sa confirmation ne sont pas identiques.`); 
-            /*
+            
                 // Check if the user change his password
                 assert.ok(update.password !== password, `Le nouveau mot de passe doit être différent de l'ancien.`); 
-
-                // Check is the format of the password is OK
-                assert.ok(schema.validate(update.password), `Le mot de passe ne remplit pas les critères de sécurité.`);
-
-            
-                // If all is ok, change the password of the user
-                // note : password is hashed with bcrypt in the User model
-                user.password = update.password; // Update the password
-                await user.save();
-            */
-                messageSuccess += `Nouveau mot de passe.`;
+                messageSuccess += `Mise à jour du mot de passe réussie.`
             }
 
-            /*
-            // New firstname ? 
-            if (update?.firstname) {
-                user.firstname = update.firstname; // Update the firstname
-                await user.save();
-                messageSuccess += `Nouveau prénom : ${user.firstname}.`;
-            }
-
-            // New lastname ?
-            if (update.lastname) {
-                user.lastname = update.lastname; // Update the lastname
-                await user.save();
-                messageSuccess += `Nouveau nom : ${user.lastname}. `
-            }
-            */
+            /* Update profile in DB */
             const result = await user.update(req.body.update);
             messageSuccess += "Compte utilisateur mis à jour"
 
@@ -126,12 +100,9 @@ module.exports = {
                 }
             });    
 
-
-        } catch (error) {
-            res.json({
-                error : error.message
-            });
-        }  
+        } catch (err) {
+            return res.status(400).json({error : `${err.message}`});
+        }
     },
 
     /**
@@ -151,11 +122,12 @@ module.exports = {
             });
 
         res.json({msg:"Utilisateur supprimé"});
-        } catch (error) {
-            res.json({error : error.message});
-        }    
+        } catch (err) {
+            return res.status(400).json({error : `${err.message}`});
+        } 
     },
 
+    
     /**
      * Get all posts of one user     
      * @param {object} req HTTP request to Express app - NOT USED
@@ -192,8 +164,8 @@ module.exports = {
             ] 
             });
             res.json(userPosts);
-        } catch (error) {
-            res.json({error : error.message});
+        } catch (err) {
+            return res.status(400).json({error : `${err.message}`});
         }
     },
 
@@ -227,16 +199,16 @@ module.exports = {
                     },
                 });
                 // If we create the post, add a message
-                if (created) message += `Création du post ${postToAdd.id} [i:${postToAdd.introduction_id},b:${postToAdd.body_id},c:${postToAdd.conclusion_id}].`;
+                if (created) message += `Création du post.`;
             }    
 
             // Add the association between the post and the user
             const addResult = await user.addPost(postToAdd); //add is a method of Sequelize
 
-            if (addResult) res.status(201).json({status:`${message} Ajout du post ${postToAdd.id} en favoris`}); 
-            else res.json({error:`L'utilisateur a déjà enregistré le post ${postToAdd.id}. Ajout impossible`});
-        } catch (error) {
-            res.json({error : error.message});
+            if (addResult) res.status(201).json({status:`Ajout du post en favoris`}); 
+            else res.json({error:`Vous avez déjà enregistré ce post en favoris !`});
+        } catch (err) {
+            return res.status(400).json({error : `${err.message}`});
         }
     },
 
@@ -262,8 +234,8 @@ module.exports = {
 
                 if (deleteResult) res.json({status:`Suppression post ${req.params.postId} OK`}); 
                 else res.json({error:"L'utilisateur n'a pas enregisré ce post. Suppression impossible"}); // If the association between the post and the user doesn't exist
-            } catch (error) {
-                res.json({error : error.message});
+            } catch (err) {
+                return res.status(400).json({error : `${err.message}`});
             }
         }
 }

@@ -1,25 +1,6 @@
 const { User } = require("../models");
-
-/* Password and email Validator Module */
 const assert = require('assert');
-// const validator = require('email-validator');
 
-/* Now, password schema is defined in the User model definition
-const passwordValidator = require('password-validator');
-
-// Create a password schema
-const schema = new passwordValidator();
-
-// Add properties to it
-schema
-			    .is().min(8)                                    // Minimum length 8
-			    .is().max(100)                                  // Maximum length 100
-			    .has().uppercase()                              // Must have uppercase letters
-			    .has().lowercase()                              // Must have lowercase letters
-			    .has().digits(2)                                // Must have at least 2 digits
-			    .has().not().spaces()                           // Should not have spaces
-			    .is().not().oneOf(['Passw0rd', 'Password123','Azerty','azerty']); // Blacklist these values
-*/
 
 module.exports = { 
     /**
@@ -40,10 +21,14 @@ module.exports = {
             ** We use "Assert" a Node's module wich say "If condition is false, I show an error)"
             */
 
-            // Check if firstname or lastname is empty. Now, not neccesary because it's in the User model definition.
-            // assert.ok((userForm.firstname && userForm.lastname),'Vous devez renseigner votre nom et prénom');
+            /* Step 1 
+            ** Check if firstname or lastname is empty
+            ** Verifications are in the User model
+            */
 
-            // Email already used ? Unique constraint is defined in the User model defition but 
+            /* Step 2
+            ** Email already used ?
+            */
             const user = await User.findOne({
                 where: {
                     email: userForm.email
@@ -51,21 +36,30 @@ module.exports = {
             });
             assert.ok(!Boolean(user),`L'utilisateur ${req.body.email} existe déjà`);            
 
-            //  -> Email is valide (module "email-avlidator"). Now, not neccesary because it's in the User model definition.
-            // assert.ok(validator.validate(userForm.email), `${userForm.email} n'est pas un email valide.`);  
-
-            //  -> The 2 passwords (pwd + confim) are the same
+            /* Step 3
+            ** Email is valide ?
+            ** Verifications are in the User model
+            */
+            
+            /* Step 4
+            ** The 2 passwords (pwd + confim) are the same
+            */
             assert.ok(userForm.password === userForm.confirmPassword, `Les mots de passes ne correspondent pas`);
             
-            //  -> Password respects the security rules (Schema). Now, not neccesary because it's in the User model definition.
-            // assert.ok(schema.validate(userForm.password), `Le mot de passe ne remplit pas les critères de sécurité`);
+            /* Step 5
+            ** Password respects the security rules
+            ** Verifications are in the User model
+            */
 
-            // If all conditions are OK, create user in Database
-            // note : password is hashed with bcrypt in the User model
+            /* Step 6
+            ** If all conditions are OK, create user in Database
+            ** Verifications are in the User model
+            */
+            // NB : password is hashed with bcrypt in the User model
             const createUser = await User.create(userForm);
-            // console.log(createUser.errors[0].message);
 
-            // After Create user return a message successfull
+
+            // After Create user return a successfull message
             return res.status(201).json({status : `Inscription réussie !`});
 
         } catch (err) {
@@ -110,7 +104,7 @@ module.exports = {
             }
             
             /* 5. If user password is correct, generate JWT */
-            const accessToken = foundUser.getJWT();
+            const accessToken = foundUser.getJWT();  // getJWT is a method of the User model 
             const user= foundUser.firstname; // return also the firstname to display a personnal message
 
              /* 6. Send token and firstname  */

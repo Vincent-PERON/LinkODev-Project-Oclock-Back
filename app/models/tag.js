@@ -10,5 +10,5 @@ Tag.init({
   tableName: "tag"
 });
 
-// on exporte la class directement !
+
 module.exports = Tag;
