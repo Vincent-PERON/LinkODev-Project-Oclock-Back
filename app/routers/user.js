@@ -7,26 +7,37 @@ const userController = require('../controllers/userController');
 // Middleware auth for JWT authorization
 const auth = require("./../middleware/authMiddleware");
 
+/* Middleware to validate the body of requests */ 
+const {validateBody} = require('../middleware/validation/validation.js');
+// Schemas definition
+const schemas = require("../middleware/validation/schemas");
+
 const router = new Router();
 
 // All routes that begin with '/me' need a token
-router.use('/me*',auth);
+router.use(auth);
 
  /**
   * GET /me
   * @summary Get details of the user connected
   * @tags User
   * @security BearerAuth
-  * @return {User} 200 - success response - application/json 
+  * @return {userResponse} 200 - success response, details of the user - application/json 
+  * @example response - 200 - User details
+  * {
+  *     "firstname" : "Prénom",
+  *     "lastname" : "Nom",
+  *     "email" : "example1@domain.com"
+  * }
   */
-router.get('/me', userController.getUser);
+router.get('/', userController.getUser);
 
 /**
-  * PATCH /me
+  * PUT /me
   * @summary Update details of the user connected
   * @tags User
   * @security BearerAuth
-  * @param {BodyUpdateUser} request.body - Body request
+  * @param {updateUserForm} request.body - Body request
   * @return {string} 200 - success response - application/json 
   * @example request - All
   * {
@@ -66,16 +77,17 @@ router.get('/me', userController.getUser);
   * }
   * 
   */
-router.patch('/me', userController.updateUser);
+router.put('/', validateBody(schemas.updateUserForm),userController.updateUser);
+
 
  /**
   * DELETE /me
   * @summary Delete the user connected
   * @tags User
   * @security BearerAuth
-  * @return {User} 200 - success response - application/json 
+  * @return {successResponse} 200 - success response, user deleted - application/json 
   */
-router.delete('/me', userController.deleteUser);
+router.delete('/', userController.deleteUser);
 
 /**
   * GET /me/posts
@@ -84,17 +96,27 @@ router.delete('/me', userController.deleteUser);
   * @security BearerAuth
   * @return {array<Post>} 200 - success response - application/json 
   */
-router.get('/me/posts', userController.getAlluserPosts);
+router.get('/posts', userController.getAlluserPosts);
 
  /**
   * POST /me/posts
   * @summary Add post to the favorites of the user connected
   * @tags User
   * @security BearerAuth
-  * @param {BodyNewPost} request.body - Body of the post request to add a new post to an user
-  * @return {BodyNewPost} 200 - success response - application/json 
+  * @param {BodyNewPost|BodyOldPost} request.body - Body of the post request to add a post to an user
+  * @return {successResponse} 200 - success response - application/json 
+  * @example request - Old post
+  * {
+  *   "postId" : 1
+  * }
+  * @example request - New post
+  * {
+  * "introductionId" : 1,
+  * "bodyId" : 1,
+  * "conclusionId" : 1
+  * }
   */
-router.post('/me/posts', userController.addPost);
+router.post('/posts',validateBody(schemas.bodyAddPost), userController.addPost);
 
  /**
   * DELETE /me/posts/{postId}
@@ -102,8 +124,8 @@ router.post('/me/posts', userController.addPost);
   * @tags User
   * @param {number} postId.path - Id of the post
   * @security BearerAuth
-  * @return {Post} 200 - success response - application/json 
+  * @return {successResponse} 200 - success response, user deleted - application/json 
   */
-router.delete('/me/posts/:postId', userController.deletePost);
+router.delete('/posts/:postId', userController.deletePost);
 
 module.exports = router;

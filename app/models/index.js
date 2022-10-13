@@ -123,8 +123,4 @@ Tag.belongsToMany(Conclusion, {
 
 
 
-// (async () => {
-//     await sequelize.sync({});
-// })();
-
 module.exports = { Post, Introduction, Body, Conclusion, Tag, User };

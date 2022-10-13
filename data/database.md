@@ -7,7 +7,7 @@ sudo -i -u postgres psql
 ## 2. Création de l'utilisateur
 
 ```SQL
-CREATE USER linkodev WITH PASSWORD 'linkodev';
+CREATE USER linkodev WITH PASSWORD 'PASSWORD;
 ```
 
 ## 3. Création de la base de données

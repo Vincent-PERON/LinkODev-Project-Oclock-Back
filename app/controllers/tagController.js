@@ -5,18 +5,23 @@ module.exports = {
 
     /**
      * Get all tags
-     * @param {*} _ 
-     * @param {*} res HTTP response from Express app
+     * @param {object} _ HTTP request from Express app - NOT USED
+     * @param {object} res HTTP response from Express app
+     * @return {object} Response with JSON 
      */
     async getAllTags(_, res) {
-        const tags = await Tag.findAll({attributes: ['id','title']});
-        res.json(tags);
+        try {
+            const tags = await Tag.findAll({attributes: ['id','title']});
+            return res.json(tags);
+        } catch (err) {
+            return res.status(500).json({error : `${err.message}`});
+        }
     },
 
     /**
      * Get a random introduction with a specific tag
      * @param {integer} tagId id of the tag
-     * @returns {Introduction} Random introduction with the tag id
+     * @return {Introduction} Random introduction with the tag id
      */
     async getRandomIntroWithTag(tagId) {
         const intro = await Introduction.findOne({
@@ -35,16 +40,15 @@ module.exports = {
                 Sequelize.fn('RANDOM'), // to order randomly in Postgres (we use findOne function, then we don't need to add option limit:1)
             ]
         });
-
         return (intro);
     },
 
     /**
      * Get a random body with a specific tag
      * @param {integer} tagId id of the tag
-     * @returns {Body} Random body with the tag id
+     * @return {Body} Random body with the tag id
      */
-     async getRandomBodyWithTag(tagId) {
+    async getRandomBodyWithTag(tagId) {
         const body = await Body.findOne({
             attributes: ['id','content'], // If we just want content instead of all columns
             include: [{
@@ -61,16 +65,15 @@ module.exports = {
                 Sequelize.fn('RANDOM'), // to order randomly in Postgres (we use findOne function, then we don't need to add option limit:1)
             ]
         });
-
         return (body);
     },
 
     /**
      * Get a random conclusion with a specific tag
      * @param {integer} tagId id of the tag
-     * @returns {Conclusion} Random conclusion with the tag id
+     * @return {Conclusion} Random conclusion with the tag id
      */
-     async getRandomConclusionWithTag(tagId) {
+    async getRandomConclusionWithTag(tagId) {
         const conclusion = await Conclusion.findOne({
             attributes: ['id','content'], // If we just want content instead of all columns
             include: [{
@@ -93,7 +96,7 @@ module.exports = {
 
     /**
      * Get a random tag
-     * @returns {Tag} Random Tag
+     * @return {Tag} Random Tag
      */
     async getRandomTag() {
         const tag = await Tag.findOne({
@@ -101,7 +104,6 @@ module.exports = {
                 Sequelize.fn('RANDOM'), 
             ]
         });
-        console.log(tag);
         return (tag);
     }
 }

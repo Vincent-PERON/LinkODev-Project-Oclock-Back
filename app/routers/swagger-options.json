@@ -2,19 +2,20 @@
     "info" : {
         "version": "1.0.0",
         "title": "API Linkodev",
-        "description": "REST API - Interface for Linkodev",
+        "description": "REST API - Interface for Link'O Dev",
         "license": {
             "name": "MIT"
         }
     },
     "security": {
         "BearerAuth": {
-          "type": "http",
-          "scheme": "bearer",
-          "bearerFormat": "JWT"
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
         }
     },
     "swaggerUIPath": "/api-doc",
     "baseDir": "/var/www/html/apo/projet-19-o-linkekoi-back/app/routers",
-    "filesPattern": "./*.js"
-  }
+    "filesPattern": ["./*.js", "../middleware/validation/schemas.js"]
+}
+
