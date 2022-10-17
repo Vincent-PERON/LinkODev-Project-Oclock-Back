@@ -1,5 +1,8 @@
 # LinkO'Dev  - Aide à la génération de posts pour LinkedIn - BACK
 
+Projet réalisé lors de l'apothéose durant la formation chez [O'Clock](https://oclock.io/)
+<p>&nbsp;</p>
+
 Avec plus de 10 millions d’utilisateurs actifs mensuels, LinkedIn™ est le premier réseau social français qui met en relation les professionnels. Vous avez envie de vous démarquer sur ce réseau ? Vous ne savez pas comment rédiger du contenu plus attractif que ceux de vos concurrents ? LinkO’Dev va vous permettre de générer des posts efficaces et avec du contenu intéressant.
 
 <p>&nbsp;</p>
